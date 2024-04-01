@@ -19,7 +19,7 @@ gorvus is a command-line interface (CLI) tool written in Go that simplifies the 
 To install gorvus, you need to have Go installed on your system. Then, you can install it using the following command:
 
 ```bash
-go install -v github.com/FelipeMCassiano/gorvus/cmd@latest
+go install github.com/FelipeMCassiano/gorvus/gorvus@latest
 ```
 
 ## Usage
