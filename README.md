@@ -5,7 +5,7 @@ gorvus is a command-line interface (CLI) tool written in Go that simplifies the 
 ## Features
 
 - **Dockerfile Generation**: Generate Dockerfiles for your projects with ease.
-- **docker-compose.yml Generation**: Generate docker-compose.yml files to orchestrate multi-container Docker applications.
+- **docker-compose.yml Generation**: Coming Soon
 - **Customizable Templates**: Configure templates to suit your project's specific requirements.
 - **CLI Interface**: Intuitive command-line interface for easy interaction.
 
