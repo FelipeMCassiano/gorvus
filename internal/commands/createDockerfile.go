@@ -9,8 +9,9 @@ import (
 )
 
 var createDockerfileCmd = &cobra.Command{
-	Use:   "createDockerfile [language]",
+	Use:   "createDockerfile <projectName> <templateLanguage>",
 	Short: "Create Dockerfile based on input language and project name",
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		projectName := args[0]
 		language := args[1]
