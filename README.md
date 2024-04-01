@@ -1,7 +1,7 @@
-div align='center'>
+<div align='center'>
   <h1>gorvus</h1>
   <p> 
-gorvus is a command-line interface (CLI) tool written in Go that simplifies the process of generating Dockerfiles and docker-compose.yml files for your projects. With GoCLI, you can quickly scaffold Docker configurations without manual editing, saving time and effort. </p>
+gorvus is a command-line interface (CLI) tool written in Go that simplifies the process of generating Dockerfiles and docker-compose.yml files for your projects. With gorvus, you can quickly scaffold Docker configurations without manual editing, saving time and effort. </p>
   <img src='https://img.shields.io/github/languages/top/FelipeMCassiano/gorvus' />
   <img src='https://img.shields.io/github/last-commit/FelipeMCassiano/gorvus' />
 </div>
