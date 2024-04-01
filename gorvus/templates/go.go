@@ -15,11 +15,9 @@ func GoDockerfile(projectName string) error {
 		return err
 	}
 
-	// Define a regular expression pattern to match the version number
 	versionPattern := `go version go(\d+\.\d+\.\d+)`
 	versionRegex := regexp.MustCompile(versionPattern)
 
-	// Find the version number using the regular expression
 	matches := versionRegex.FindStringSubmatch(string(goVersionOutput))
 	if len(matches) < 2 {
 		return fmt.Errorf("failed to extract Go version number")
