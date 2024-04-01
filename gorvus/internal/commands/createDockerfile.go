@@ -1,10 +1,10 @@
-package cmd
+package commands
 
 import (
 	"fmt"
 	"log"
 
-	"github.com/FelipeMCassiano/gorvus/gorvus/templates"
+	"github.com/FelipeMCassiano/gorvus/gorvus/internal/templates"
 	"github.com/spf13/cobra"
 )
 
