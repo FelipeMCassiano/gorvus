@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/FelipeMCassiano/gorvus/gorvus/internal/templates"
+	"github.com/FelipeMCassiano/gorvus/internal/templates"
 	"github.com/spf13/cobra"
 )
 
