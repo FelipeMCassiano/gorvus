@@ -29,6 +29,15 @@ Once installed, you can use gorvus to generate Dockerfiles and docker-compose.ym
 ```
 gorvus Dockerfile <projectName> <language>
 ```
+
+Note: Currently, only the Go version of Your CLI Name supports Dockerfile generation.
+
+details>
+  <summary><strong>ℹ️ Info</strong></summary>
+ Currently, only the language Go supports Dockerfile generation.
+</details>
+
+
 ### Generate docker-compose.yml (Coming Soon)
 
 The feature to generate a docker-compose.yml file will be available soon. Stay tuned for updates!
