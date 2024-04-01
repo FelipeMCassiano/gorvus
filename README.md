@@ -28,4 +28,6 @@ gorvus Dockerfile <projectName> <language>
 
 The feature to generate a docker-compose.yml file will be available soon. Stay tuned for updates!
 
+## License
 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
