@@ -42,6 +42,9 @@ details>
 
 The feature to generate a docker-compose.yml file will be available soon. Stay tuned for updates!
 
+## Contruibuing
+If you're interested in contributing to this project, consider reading the [Contributing Guide](contributing.md)
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
