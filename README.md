@@ -19,7 +19,7 @@ gorvus is a command-line interface (CLI) tool written in Go that simplifies the 
 To install gorvus, you need to have Go installed on your system. Then, you can install it using the following command:
 
 ```bash
-go install github.com/FelipeMCassiano/gorvus
+go install -v github.com/FelipeMCassiano/gorvus/cmd@latest
 ```
 
 ## Usage
@@ -30,9 +30,8 @@ Once installed, you can use gorvus to generate Dockerfiles and docker-compose.ym
 gorvus Dockerfile <projectName> <language>
 ```
 
-Note: Currently, only the Go version of Your CLI Name supports Dockerfile generation.
 
-details>
+<details>
   <summary><strong>ℹ️ Info</strong></summary>
  Currently, only the language Go supports Dockerfile generation.
 </details>
