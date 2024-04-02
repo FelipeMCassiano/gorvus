@@ -18,7 +18,12 @@ func createDockerfile() *cobra.Command {
 		Short: "Create Dockerfile based on input language and project name",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(language) == 0 {
-				fmt.Println("You need to specify a language template using `--language`")
+				fmt.Println("You need to specify a language template using `--language` or `-l`")
+				os.Exit(1)
+			}
+
+			if len(projectName) == 0 {
+				fmt.Println("You need to specify the project name using `--projectName` or `-p`")
 				os.Exit(1)
 			}
 
@@ -29,11 +34,18 @@ func createDockerfile() *cobra.Command {
 				}
 			}
 
+			if strings.ToLower(language) == "rust" {
+				if err := templates.RustDockerfile(projectName); err != nil {
+					fmt.Printf("error: %s", err.Error())
+					os.Exit(1)
+				}
+			}
+
 			fmt.Println("Dockerfile created succesfully")
 		},
 	}
 
-	cmd.Flags().StringVarP(&projectName, "projectName", "p", "myproject", "Define project name")
+	cmd.Flags().StringVarP(&projectName, "projectName", "p", "", "Define project name")
 	cmd.Flags().StringVarP(&language, "language", "l", "", "Define template language")
 
 	return cmd
