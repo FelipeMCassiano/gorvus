@@ -27,7 +27,7 @@ Once installed, you can use gorvus to generate Dockerfiles and docker-compose.ym
 ### Generate Dockerfile
 
 ```bash
-gorvus Dockerfile <projectName> <language>
+gorvus createDockerfile --language<language> --projectName<projectName>
 ```
 
 <details>
