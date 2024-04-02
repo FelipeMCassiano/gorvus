@@ -51,10 +51,7 @@ CMD ["./{{.ProjectName}}"]
 
 	defer file.Close()
 
-	data := struct {
-		Version     string
-		ProjectName string
-	}{
+	data := dataDockerfile{
 		ProjectName: projectName,
 		Version:     string(goVersion),
 	}
