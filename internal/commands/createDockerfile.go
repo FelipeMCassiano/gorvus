@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/FelipeMCassiano/gorvus/internal/templates"
+	"github.com/FelipeMCassiano/gorvus/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -17,6 +18,13 @@ func createDockerfile() *cobra.Command {
 		Use:   "createDockerfile",
 		Short: "Create Dockerfile based on input language and project name",
 		Run: func(cmd *cobra.Command, args []string) {
+			if cmd.Flag("view supported language").Changed {
+				utils.ShowSupportedLangs()
+				os.Exit(1)
+			}
+
+			utils.VerifyIfLangIsSupported(language)
+
 			if len(language) == 0 {
 				fmt.Println("You need to specify a language template using `--language` or `-l`")
 				os.Exit(1)
@@ -47,6 +55,7 @@ func createDockerfile() *cobra.Command {
 
 	cmd.Flags().StringVarP(&projectName, "projectName", "p", "", "Define project name")
 	cmd.Flags().StringVarP(&language, "language", "l", "", "Define template language")
+	cmd.Flags().BoolP("view supported language", "s", false, "Gives a list with the supported languages")
 
 	return cmd
 }
