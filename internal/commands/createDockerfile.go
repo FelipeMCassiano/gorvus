@@ -55,7 +55,7 @@ func createDockerfile() *cobra.Command {
 
 	cmd.Flags().StringVarP(&projectName, "projectName", "p", "", "Define project name")
 	cmd.Flags().StringVarP(&language, "language", "l", "", "Define template language")
-	cmd.Flags().BoolP("view supported language", "s", false, "Gives a list with the supported languages")
+	cmd.Flags().BoolP("view supported languages", "s", false, "Gives a list with the supported languages")
 
 	return cmd
 }
