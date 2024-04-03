@@ -26,23 +26,23 @@ func RustDockerfile(projectName string) error {
 	rustVersion := matches[1]
 
 	dockerFileContent := `
-    FROM rust:{{.Version}}-buster as builder
+FROM rust:{{.Version}}-buster as builder
 
-    WORKDIR /app
+WORKDIR /app
 
-    COPY . .
+COPY . .
 
-    RUN cargo build --release
+RUN cargo build --release
 
-    FROM debian:buster-slim
+FROM debian:buster-slim
 
-    WORKDIR /usr/local/bin
+WORKDIR /usr/local/bin
 
-    COPY --from=builder /app/target/release/{{.ProjectName}} .
+COPY --from=builder /app/target/release/{{.ProjectName}} .
 
-    RUN apt-get update && apt install -y openssl
+RUN apt-get update && apt install -y openssl
 
-    CMD ["./{{.ProjectName}}"]
+CMD ["./{{.ProjectName}}"]
     `
 
 	tmpl, err := template.New("Dockerfile").Parse(dockerFileContent)
