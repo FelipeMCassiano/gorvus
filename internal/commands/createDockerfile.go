@@ -23,27 +23,29 @@ func createDockerfile() *cobra.Command {
 				os.Exit(0)
 			}
 
-			utils.VerifyIfLangIsSupported(language)
-
 			if len(language) == 0 {
-				fmt.Println("You need to specify a language template using `--language` or `-l`")
+				cmd.Help()
+				fmt.Println("\n> You must specify the project name, use --language or -l")
 				os.Exit(1)
 			}
 
 			if len(projectName) == 0 {
-				fmt.Println("You need to specify the project name using `--projectName` or `-p`")
+				cmd.Help()
+				fmt.Println("\n> You must specify the project name, use --projectName or -p")
 				os.Exit(1)
 			}
 
+			utils.VerifyIfLangIsSupported(language)
+
 			if strings.ToLower(language) == "go" {
-				if err := templates.GoDockerfile(projectName); err != nil {
+				if err := templates.BuildGoDockerfile(projectName); err != nil {
 					fmt.Printf("error: %s", err.Error())
 					os.Exit(1)
 				}
 			}
 
 			if strings.ToLower(language) == "rust" {
-				if err := templates.RustDockerfile(projectName); err != nil {
+				if err := templates.BuildRustDockerfile(projectName); err != nil {
 					fmt.Printf("error: %s", err.Error())
 					os.Exit(1)
 				}
