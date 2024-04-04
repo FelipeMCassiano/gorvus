@@ -11,7 +11,7 @@ func VerifyIfLangIsSupported(language string) {
 	_, ok := langs[language]
 
 	if !ok {
-		fmt.Printf("The language %s is not supported", language)
+		fmt.Printf("The language '%s' is not supported\n", language)
 		os.Exit(1)
 	}
 }
