@@ -18,32 +18,34 @@ func createDockerfile() *cobra.Command {
 		Use:   "createDockerfile",
 		Short: "Create Dockerfile based on input language and project name",
 		Run: func(cmd *cobra.Command, args []string) {
-			if cmd.Flag("view supported language").Changed {
+			if cmd.Flag("listLanguages").Changed {
 				utils.ShowSupportedLangs()
+				os.Exit(0)
+			}
+
+			if len(language) == 0 {
+				cmd.Help()
+				fmt.Println("\n> You must specify the project name, use --language or -l")
+				os.Exit(1)
+			}
+
+			if len(projectName) == 0 {
+				cmd.Help()
+				fmt.Println("\n> You must specify the project name, use --projectName or -p")
 				os.Exit(1)
 			}
 
 			utils.VerifyIfLangIsSupported(language)
 
-			if len(language) == 0 {
-				fmt.Println("You need to specify a language template using `--language` or `-l`")
-				os.Exit(1)
-			}
-
-			if len(projectName) == 0 {
-				fmt.Println("You need to specify the project name using `--projectName` or `-p`")
-				os.Exit(1)
-			}
-
 			if strings.ToLower(language) == "go" {
-				if err := templates.GoDockerfile(projectName); err != nil {
+				if err := templates.BuildGoDockerfile(projectName); err != nil {
 					fmt.Printf("error: %s", err.Error())
 					os.Exit(1)
 				}
 			}
 
 			if strings.ToLower(language) == "rust" {
-				if err := templates.RustDockerfile(projectName); err != nil {
+				if err := templates.BuildRustDockerfile(projectName); err != nil {
 					fmt.Printf("error: %s", err.Error())
 					os.Exit(1)
 				}
@@ -55,7 +57,7 @@ func createDockerfile() *cobra.Command {
 
 	cmd.Flags().StringVarP(&projectName, "projectName", "p", "", "Define project name")
 	cmd.Flags().StringVarP(&language, "language", "l", "", "Define template language")
-	cmd.Flags().BoolP("view supported languages", "s", false, "Gives a list with the supported languages")
+	cmd.Flags().BoolP("listLanguages", "s", false, "Gives a list with the supported languages")
 
 	return cmd
 }

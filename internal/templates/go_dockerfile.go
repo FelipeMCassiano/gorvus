@@ -5,10 +5,22 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
-	"text/template"
 )
 
-func GoDockerfile(projectName string) error {
+var goDockerfile = `FROM golang:{{.Version}}
+
+WORKDIR /app
+
+COPY . .
+
+RUN go mod download
+
+RUN go build -o {{.ProjectName}}
+
+CMD ["./{{.ProjectName}}"]
+`
+
+func BuildGoDockerfile(projectName string) error {
 	cmd := exec.Command("go", "version")
 	goVersionOutput, err := cmd.Output()
 	if err != nil {
@@ -23,24 +35,10 @@ func GoDockerfile(projectName string) error {
 		return fmt.Errorf("failed to extract Go version number")
 	}
 	goVersion := matches[1]
-	dockerFileContent := `
-FROM golang:{{.Version}}
 
-WORKDIR /app
-
-COPY . .
-
-RUN go mod download
-
-RUN go build -o {{.ProjectName}}
-
-CMD ["./{{.ProjectName}}"]
-    `
-
-	tmpl, err := template.New("Dockerfile").Parse(dockerFileContent)
-	if err != nil {
-		fmt.Println("Error parsing Dockerfile template:", err)
-		return err
+	data := dockerfileData{
+		ProjectName: projectName,
+		Version:     string(goVersion),
 	}
 
 	file, err := os.Create("Dockerfile")
@@ -48,18 +46,9 @@ CMD ["./{{.ProjectName}}"]
 		fmt.Println("Error creating Dockerfile:", err)
 		return err
 	}
-
 	defer file.Close()
 
-	data := dataDockerfile{
-		ProjectName: projectName,
-		Version:     string(goVersion),
-	}
-
-	if err := tmpl.Execute(file, data); err != nil {
-		fmt.Println("Error executing Dockerfile template:", err)
-		return err
-	}
+	applyTemplate(file, goDockerfile, data)
 
 	return nil
 }
