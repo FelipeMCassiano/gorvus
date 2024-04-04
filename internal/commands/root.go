@@ -15,6 +15,7 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	rootCmd.AddCommand(createDockerfile())
+	rootCmd.AddCommand(CreateComposeCommand())
 
 	err := rootCmd.Execute()
 	if err != nil {
