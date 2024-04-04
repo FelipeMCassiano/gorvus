@@ -97,6 +97,11 @@ func CreateComposeCommand() *cobra.Command {
 
 func ComposeAdd(compose *map[string]interface{}, serviceName string, service map[string]interface{}) error {
 	// todo check for version?
+	// is compose["services"] uninitialized? (kinda hacky, but it settles for now)
+	if (*compose)["services"] == nil {
+		(*compose)["services"] = make(map[string]interface{})
+	}
+
 	composeServices := (*compose)["services"].(map[string]interface{})
 
 	// search for conflicting service names
