@@ -13,12 +13,13 @@ import (
 func generateDockerfile() *cobra.Command {
 	var projectName string
 	var language string
+	var listLanguages bool
 
 	cmd := &cobra.Command{
-		Use:   "createDockerfile",
+		Use:   "create-dockerfile",
 		Short: "Create Dockerfile based on input language and project name",
 		Run: func(cmd *cobra.Command, args []string) {
-			if cmd.Flag("listLanguages").Changed {
+			if listLanguages {
 				utils.ShowSupportedLangs()
 				os.Exit(0)
 			}
@@ -31,7 +32,7 @@ func generateDockerfile() *cobra.Command {
 
 			if len(projectName) == 0 {
 				cmd.Help()
-				fmt.Println("\n> You must specify the project name, use --projectName or -p")
+				fmt.Println("\n> You must specify the project name, use --project-name or -p")
 				os.Exit(1)
 			}
 
@@ -55,9 +56,9 @@ func generateDockerfile() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&projectName, "projectName", "p", "", "Define project name")
+	cmd.Flags().StringVarP(&projectName, "project-name", "p", "", "Define project name")
 	cmd.Flags().StringVarP(&language, "language", "l", "", "Define template language")
-	cmd.Flags().BoolP("listLanguages", "s", false, "Gives a list with the supported languages")
+	cmd.Flags().BoolVarP(&listLanguages, "list-languages", "s", false, "Gives a list with the supported languages")
 
 	return cmd
 }
