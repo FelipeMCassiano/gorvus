@@ -5,20 +5,8 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"text/template"
 )
-
-var goDockerfile = `FROM golang:{{.Version}}
-
-WORKDIR /app
-
-COPY . .
-
-RUN go mod download
-
-RUN go build -o {{.ProjectName}}
-
-CMD ["./{{.ProjectName}}"]
-`
 
 func BuildGoDockerfile(projectName string) error {
 	cmd := exec.Command("go", "version")
@@ -36,6 +24,12 @@ func BuildGoDockerfile(projectName string) error {
 	}
 	goVersion := matches[1]
 
+	tmpl, err := template.ParseFiles("internal/templates/go-dockerfile.tmpl")
+	if err != nil {
+		fmt.Println("Error parsing Dockerfile template:", err)
+		return err
+	}
+
 	data := dockerfileData{
 		ProjectName: projectName,
 		Version:     string(goVersion),
@@ -48,7 +42,7 @@ func BuildGoDockerfile(projectName string) error {
 	}
 	defer file.Close()
 
-	applyTemplate(file, goDockerfile, data)
+	applyTemplate(file, tmpl, data)
 
 	return nil
 }

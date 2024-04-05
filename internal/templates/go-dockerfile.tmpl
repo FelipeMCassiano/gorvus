@@ -1,0 +1,12 @@
+FROM golang:{{.Version}}
+
+WORKDIR /app
+
+COPY . .
+
+RUN go mod download
+
+RUN go build -o {{.ProjectName}}
+
+CMD ["./{{.ProjectName}}"]
+
