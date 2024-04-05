@@ -6,11 +6,26 @@ import (
 	"path"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
 )
 
+type DockerCompose struct {
+	Version  string
+	Services map[string]Service
+}
+
+type Service struct {
+	Image       string
+	Environment map[string]string
+	Ports       []string
+	Networks    []string
+}
+
 func CreateComposeCommand() *cobra.Command {
 	var serviceNameFlag string
+	var serviceImageFlag string
+	var servicePortsFlag string
 
 	composeCmd := &cobra.Command{
 		Use:   "compose",
@@ -24,50 +39,59 @@ func CreateComposeCommand() *cobra.Command {
 		Use:   "add",
 		Short: "Adds a new service into docker-compose.yml",
 		Run: func(cmd *cobra.Command, args []string) {
-			if len(args) == 0 {
-				fmt.Println("invalid arguments given, the add command accepts a single argument that is the image to be added.")
-				fmt.Println("tip: you can also set a custom service name by using the --name flag")
-				return
+			if len(serviceNameFlag) == 0 {
+				fmt.Println("\n You must specify the name of the service, use `--name` or `-n`")
+				cmd.Help()
+				os.Exit(1)
 			}
+			if len(serviceImageFlag) == 0 {
+				fmt.Println("\n You must specify the image of the service, use `--serviceimage` or `-i`")
+				cmd.Help()
+				os.Exit(1)
+			}
+
+			envs := viper.GetStringMapString("envs")
 
 			workingDir, getWdError := os.Getwd()
 			if getWdError != nil {
 				fmt.Println("oops! could not get current working directory.")
-				return
+				os.Exit(1)
 			}
 
 			dockerComposePath := path.Join(workingDir, "docker-compose.yml")
 			dockerComposeFileInfo, statComposeError := os.Stat(dockerComposePath)
 			if statComposeError != nil {
 				fmt.Println("for some reason, it failed to read docker-compose.yml file.")
-				return
+				os.Exit(1)
 			}
 
 			// todo fallback to empty composeYml
 			dockerComposeFileContents, readComposeError := os.ReadFile(dockerComposePath)
 			if readComposeError != nil {
 				fmt.Println("for some reason, it failed to read docker-compose.yml file.")
-				return
+				os.Exit(1)
 			}
 
-			composeYml := make(map[string]interface{})
-			yamlParseError := yaml.Unmarshal(dockerComposeFileContents, composeYml)
+			var composeYml DockerCompose
+
+			yamlParseError := yaml.Unmarshal(dockerComposeFileContents, &composeYml)
 			if yamlParseError != nil {
 				fmt.Println("can't manage docker-compose.yml, the contents of the file are invalid.")
-				return
+				os.Exit(1)
 			}
 
-			selectedImage := args[0]
+			// TODO add flag and creation for networks
 
-			// use image name as defaults if service name is not set
-			if serviceNameFlag == "" {
-				serviceNameFlag = selectedImage
-			}
+			service := Service{
+				Image:       serviceImageFlag,
+				Environment: envs,
 
-			// todo use templating file
-			service := map[string]interface{}{
-				"name":  serviceNameFlag,
-				"image": selectedImage,
+				Networks: []string{
+					"Networks",
+				},
+				Ports: []string{
+					servicePortsFlag,
+				},
 			}
 
 			//! composeYml will be mutated
@@ -88,32 +112,39 @@ func CreateComposeCommand() *cobra.Command {
 		},
 	}
 
-	composeAddCmd.PersistentFlags().StringVarP(&serviceNameFlag, "name", "n", "", "sets the service name in docker-compose")
+	composeAddCmd.Flags().StringVarP(&serviceNameFlag, "name", "n", "", "sets the service name in docker-compose")
+	composeAddCmd.Flags().StringVarP(&serviceImageFlag, "image", "i", "", "sets the image in docker-compose")
+	composeAddCmd.Flags().StringVarP(&servicePortsFlag, "ports", "p", "", "sets the port in service in docker-compose")
+	composeAddCmd.Flags().StringToString("envs", map[string]string{}, "sets the environments in docker-compose")
+	viper.BindPFlag("envs", composeAddCmd.Flags().Lookup("envs"))
 
 	composeCmd.AddCommand(composeAddCmd)
 
 	return composeCmd
 }
 
-func ComposeAdd(compose *map[string]interface{}, serviceName string, service map[string]interface{}) error {
+func ComposeAdd(compose *DockerCompose, serviceName string, service Service) error {
 	// todo check for version?
 	// is compose["services"] uninitialized? (kinda hacky, but it settles for now)
-	if (*compose)["services"] == nil {
-		(*compose)["services"] = make(map[string]interface{})
+	// if (*compose)["services"] == nil {
+	// 	(*compose)["services"] = make(map[string]interface{})
+	// }
+
+	if compose.Services == nil {
+		compose.Services = make(map[string]Service)
 	}
 
-	composeServices := (*compose)["services"].(map[string]interface{})
+	// composeServices := (*compose)["services"].(map[string]interface{})
 
 	// search for conflicting service names
-	for inComposeServiceName := range composeServices {
+	for inComposeServiceName := range compose.Services {
 		if inComposeServiceName == serviceName {
 			return fmt.Errorf("%s is conflicting with a service with same name", serviceName)
 		}
 	}
-
 	// todo maybe prevent this side effect by returning new yml?
 	// add requested service into compose services
-	composeServices[serviceName] = service
+	compose.Services[serviceName] = service
 
 	return nil
 }
