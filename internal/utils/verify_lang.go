@@ -6,14 +6,12 @@ import (
 )
 
 func VerifyIfLangIsSupported(language string) {
-	langs := supportedLangs()
-
-	_, ok := langs[language]
+	_, ok := supportedLangs[language]
 
 	if !ok {
 		fmt.Printf("The language '%s' is not supported\n", language)
 
-		similarLangs := FindSimilarLangs(language)
+		similarLangs := findSimilarLangs(language)
 		if similarLangs != "" {
 			fmt.Printf("Did you mean %v?\n", similarLangs)
 		}

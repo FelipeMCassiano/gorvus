@@ -8,9 +8,9 @@
 ## Features
 
 - **Dockerfile Generation**: Generate Dockerfiles for your projects with ease.
-- **docker-compose.yml Generation**: Coming Soon
+- **docker-compose.yml Generation**: Coming soon...
 - **Customizable Templates**: Configure templates to suit your project's specific requirements.
-- **CLI Interface**: Intuitive command-line interface for easy interaction.
+- **Command-line Interface**: Use an intuitive and fancy interface to maximize your experience.
 
 ## Installation
 
@@ -30,11 +30,8 @@ Once installed, you can use gorvus to generate Dockerfiles and docker-compose.ym
 gorvus createDockerfile --language<language> --projectName<projectName>
 ```
 
-<details>
-  <summary><strong>ℹ️ Info</strong></summary>
-
-  Currently, only the languages Go and Rust supports Dockerfile generation.
-</details>
+> [!NOTE]
+> Currently, only the languages Go and Rust supports Dockerfile generation.
 
 ### Generate docker-compose.yml (Coming Soon)
 
