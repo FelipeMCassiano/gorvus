@@ -2,9 +2,8 @@ package utils
 
 import "strings"
 
-func FindSimilarLangs(language string) string {
+func findSimilarLangs(language string) string {
 	var similarLangs []string
-	supportedLangs := supportedLangs()
 
 	for k := range supportedLangs {
 		for _, char := range language {

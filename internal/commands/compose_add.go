@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func CreateComposeCommand() *cobra.Command {
+func compose() *cobra.Command {
 	var serviceNameFlag string
 
 	composeCmd := &cobra.Command{
@@ -71,7 +71,7 @@ func CreateComposeCommand() *cobra.Command {
 			}
 
 			//! composeYml will be mutated
-			if addServiceError := ComposeAdd(&composeYml, serviceNameFlag, service); addServiceError != nil {
+			if addServiceError := composeAdd(&composeYml, serviceNameFlag, service); addServiceError != nil {
 				fmt.Println(addServiceError)
 				return
 			}
@@ -95,7 +95,7 @@ func CreateComposeCommand() *cobra.Command {
 	return composeCmd
 }
 
-func ComposeAdd(compose *map[string]interface{}, serviceName string, service map[string]interface{}) error {
+func composeAdd(compose *map[string]interface{}, serviceName string, service map[string]interface{}) error {
 	// todo check for version?
 	// is compose["services"] uninitialized? (kinda hacky, but it settles for now)
 	if (*compose)["services"] == nil {
