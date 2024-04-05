@@ -2,7 +2,7 @@ package utils
 
 import "strings"
 
-func FindSimilarLangs(language string) string {
+func findSimilarLangs(language string) string {
 	var similarLangs []string
 
 	for k := range supportedLangs {

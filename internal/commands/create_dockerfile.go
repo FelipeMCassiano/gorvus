@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func createDockerfile() *cobra.Command {
+func generateDockerfile() *cobra.Command {
 	var projectName string
 	var language string
 
