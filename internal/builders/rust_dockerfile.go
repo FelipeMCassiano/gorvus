@@ -1,30 +1,12 @@
-package templates
+package builders
 
 import (
 	"fmt"
 	"os"
 	"os/exec"
 	"regexp"
+	"text/template"
 )
-
-var rustDockerfile = `FROM rust:{{.Version}}-buster as builder
-
-WORKDIR /app
-
-COPY . .
-
-RUN cargo build --release
-
-FROM debian:buster-slim
-
-WORKDIR /usr/local/bin
-
-COPY --from=builder /app/target/release/{{.ProjectName}} .
-
-RUN apt-get update && apt install -y openssl
-
-CMD ["./{{.ProjectName}}"]
-`
 
 func BuildRustDockerfile(projectName string) error {
 	cmd := exec.Command("cargo", "-V")
@@ -43,6 +25,12 @@ func BuildRustDockerfile(projectName string) error {
 	}
 	rustVersion := matches[1]
 
+	tmpl, err := template.ParseFiles("internal/templates/rust-dockerfile.tmpl")
+  if err != nil {
+    fmt.Println("Error parsing Dockerfile template:", err)
+		return err
+  }
+
 	data := dockerfileData{
 		ProjectName: projectName,
 		Version:     rustVersion,
@@ -55,7 +43,7 @@ func BuildRustDockerfile(projectName string) error {
 	}
 	defer file.Close()
 
-	applyTemplate(file, rustDockerfile, data)
+	applyTemplate(file, tmpl, data)
 
 	return nil
 }

@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/FelipeMCassiano/gorvus/internal/templates"
+  "github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/FelipeMCassiano/gorvus/internal/utils"
 	"github.com/spf13/cobra"
 )
@@ -39,14 +39,14 @@ func generateDockerfile() *cobra.Command {
 			utils.VerifyIfLangIsSupported(language)
 
 			if strings.ToLower(language) == "go" {
-				if err := templates.BuildGoDockerfile(projectName); err != nil {
+				if err := builders.BuildGoDockerfile(projectName); err != nil {
 					fmt.Printf("error: %s", err.Error())
 					os.Exit(1)
 				}
 			}
 
 			if strings.ToLower(language) == "rust" {
-				if err := templates.BuildRustDockerfile(projectName); err != nil {
+				if err := builders.BuildRustDockerfile(projectName); err != nil {
 					fmt.Printf("error: %s", err.Error())
 					os.Exit(1)
 				}
