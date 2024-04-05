@@ -10,7 +10,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-<<<<<<< HEAD:internal/commands/composeAdd.go
 type DockerCompose struct {
 	Version  string
 	Services map[string]Service
@@ -24,9 +23,6 @@ type Service struct {
 }
 
 func CreateComposeCommand() *cobra.Command {
-=======
-func compose() *cobra.Command {
->>>>>>> main:internal/commands/compose_add.go
 	var serviceNameFlag string
 	var serviceImageFlag string
 	var servicePortsFlag string
@@ -127,11 +123,7 @@ func compose() *cobra.Command {
 	return composeCmd
 }
 
-<<<<<<< HEAD:internal/commands/composeAdd.go
-func ComposeAdd(compose *DockerCompose, serviceName string, service Service) error {
-=======
-func composeAdd(compose *map[string]interface{}, serviceName string, service map[string]interface{}) error {
->>>>>>> main:internal/commands/compose_add.go
+func composeAdd(compose *DockerCompose, serviceName string, service Service) error {
 	// todo check for version?
 	// is compose["services"] uninitialized? (kinda hacky, but it settles for now)
 	// if (*compose)["services"] == nil {
