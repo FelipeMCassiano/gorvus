@@ -115,7 +115,7 @@ func CreateComposeCommand() *cobra.Command {
 	composeAddCmd.Flags().StringVarP(&serviceNameFlag, "name", "n", "", "sets the service name in docker-compose")
 	composeAddCmd.Flags().StringVarP(&serviceImageFlag, "image", "i", "", "sets the image in docker-compose")
 	composeAddCmd.Flags().StringVarP(&servicePortsFlag, "ports", "p", "", "sets the port in service in docker-compose")
-	composeAddCmd.Flags().StringToString("envs", map[string]string{}, "sets the environments in docker-compose")
+	composeAddCmd.Flags().StringToStringP("envs", "e", map[string]string{}, "sets an environment variable in docker-compose")
 	viper.BindPFlag("envs", composeAddCmd.Flags().Lookup("envs"))
 
 	composeCmd.AddCommand(composeAddCmd)
@@ -126,9 +126,6 @@ func CreateComposeCommand() *cobra.Command {
 func composeAdd(compose *DockerCompose, serviceName string, service Service) error {
 	// todo check for version?
 	// is compose["services"] uninitialized? (kinda hacky, but it settles for now)
-	// if (*compose)["services"] == nil {
-	// 	(*compose)["services"] = make(map[string]interface{})
-	// }
 
 	if compose.Services == nil {
 		compose.Services = make(map[string]Service)
