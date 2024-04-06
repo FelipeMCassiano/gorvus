@@ -5,7 +5,8 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
-	"text/template"
+
+	_ "embed"
 )
 
 func BuildGoDockerfile(projectName string) error {
@@ -23,10 +24,8 @@ func BuildGoDockerfile(projectName string) error {
 		return fmt.Errorf("failed to extract Go version number")
 	}
 	goVersion := matches[1]
-
-	tmpl, err := template.ParseFiles("internal/templates/go-dockerfile.tmpl")
+	datafile, err := templatesContent.ReadFile("templates/go_dockerfile.tmpl")
 	if err != nil {
-		fmt.Println("Error parsing Dockerfile template:", err)
 		return err
 	}
 
@@ -37,12 +36,11 @@ func BuildGoDockerfile(projectName string) error {
 
 	file, err := os.Create("Dockerfile")
 	if err != nil {
-		fmt.Println("Error creating Dockerfile:", err)
-		return err
+		return fmt.Errorf("Error creating Dockerfile: %s", err.Error())
 	}
 	defer file.Close()
 
-	applyTemplate(file, tmpl, data)
+	applyTemplate(file, string(datafile), data)
 
 	return nil
 }

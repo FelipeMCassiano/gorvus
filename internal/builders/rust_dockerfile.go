@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
-	"text/template"
 )
 
 func BuildRustDockerfile(projectName string) error {
@@ -25,11 +24,11 @@ func BuildRustDockerfile(projectName string) error {
 	}
 	rustVersion := matches[1]
 
-	tmpl, err := template.ParseFiles("internal/templates/rust-dockerfile.tmpl")
-  if err != nil {
-    fmt.Println("Error parsing Dockerfile template:", err)
+	datafile, err := templatesContent.ReadFile("templates/rust_dockerfile.tmpl")
+	if err != nil {
+		fmt.Println("Error parsing Dockerfile template:", err)
 		return err
-  }
+	}
 
 	data := dockerfileData{
 		ProjectName: projectName,
@@ -43,7 +42,7 @@ func BuildRustDockerfile(projectName string) error {
 	}
 	defer file.Close()
 
-	applyTemplate(file, tmpl, data)
+	applyTemplate(file, string(datafile), data)
 
 	return nil
 }
