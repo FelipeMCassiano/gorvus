@@ -18,8 +18,9 @@ func generateDockerfile() *cobra.Command {
 	const defaultProjectName = "myproject"
 
 	cmd := &cobra.Command{
-		Use:   "create-dockerfile",
-		Short: "Create Dockerfile based on input language and project name",
+		Use:     "create-dockerfile",
+		Short:   "Create Dockerfile based on input language and project name",
+		Aliases: []string{"gend"},
 		Run: func(cmd *cobra.Command, args []string) {
 			if listLanguages {
 				utils.ShowSupportedLangs()

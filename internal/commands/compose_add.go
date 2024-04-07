@@ -30,9 +30,6 @@ func CreateComposeCommand() *cobra.Command {
 	composeCmd := &cobra.Command{
 		Use:   "compose",
 		Short: "Manages current directory's docker-compose.yml",
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("use add or remove to manage your docker-compose with gorvus.")
-		},
 	}
 
 	composeAddCmd := &cobra.Command{
