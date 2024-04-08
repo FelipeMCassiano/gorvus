@@ -31,7 +31,7 @@ gorvus createDockerfile --language<language> --projectName<projectName>
 ```
 
 > [!NOTE]
-> Currently, only the languages Go and Rust supports Dockerfile generation.
+> Currently, only the languages Go, Rust, Node(js and ts) and Bun supports Dockerfile generation.
 
 ### Generate docker-compose.yml (Coming Soon)
 
