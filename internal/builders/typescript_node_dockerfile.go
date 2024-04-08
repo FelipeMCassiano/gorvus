@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
+	"strings"
 )
 
 func BuildTypescriptNodeDockefile(entryfile string) error {
@@ -31,7 +33,7 @@ func BuildTypescriptNodeDockefile(entryfile string) error {
 	}
 
 	data := dockerfileData{
-		EntryFile: entryfile,
+		EntryFile: strings.TrimSuffix(entryfile, filepath.Ext(entryfile)),
 		Version:   nodeVersion,
 	}
 
