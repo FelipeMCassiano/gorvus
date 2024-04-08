@@ -7,9 +7,23 @@ import (
 	"regexp"
 
 	_ "embed"
+
+	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func BuildGoDockerfile(projectName string) error {
+func BuildGoDockerfile(input DockerfileData) error {
+	if len(input.ProjectName) == 0 {
+		fmt.Println(
+			text.FgYellow.Sprintf("> You must specify the project name, use `--project-name` or -p"),
+		)
+		os.Exit(1)
+	}
+
+	if len(input.EntryFile) >= 1 {
+		fmt.Println(text.FgYellow.Sprintf("> This language doens't needs to specify the Entry File"))
+		os.Exit(1)
+	}
+
 	cmd := exec.Command("go", "version")
 	goVersionOutput, err := cmd.Output()
 	if err != nil {
@@ -29,10 +43,7 @@ func BuildGoDockerfile(projectName string) error {
 		return err
 	}
 
-	data := dockerfileData{
-		ProjectName: projectName,
-		Version:     string(goVersion),
-	}
+	input.Version = goVersion
 
 	file, err := os.Create("Dockerfile")
 	if err != nil {
@@ -40,7 +51,7 @@ func BuildGoDockerfile(projectName string) error {
 	}
 	defer file.Close()
 
-	applyTemplate(file, string(datafile), data)
+	applyTemplate(file, string(datafile), input)
 
 	return nil
 }

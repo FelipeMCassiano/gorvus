@@ -11,7 +11,7 @@ import (
 //go:embed templates/*
 var templatesContent embed.FS
 
-type dockerfileData struct {
+type DockerfileData struct {
 	EntryFile   string
 	Version     string
 	ProjectName string

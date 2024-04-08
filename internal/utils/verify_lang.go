@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func VerifyIfLangIsSupported(language string) {
-	_, ok := supportedLangs[language]
+func VerifyIfLangIsSupported(language string) func(builders.DockerfileData) error {
+	builder, ok := supportedLangs[language]
 
 	if !ok {
 		fmt.Println(
@@ -22,4 +23,6 @@ func VerifyIfLangIsSupported(language string) {
 
 		os.Exit(1)
 	}
+
+	return builder
 }

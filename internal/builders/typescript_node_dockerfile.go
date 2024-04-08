@@ -8,9 +8,21 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func BuildTypescriptNodeDockefile(entryfile string) error {
+func BuildTypescriptNodeDockefile(input DockerfileData) error {
+	if len(input.EntryFile) == 0 {
+		fmt.Println(text.FgYellow.Sprint("> You must specify the entry file, use `--entry-file` or `-e`"))
+		os.Exit(1)
+	}
+
+	if len(input.ProjectName) >= 1 {
+		fmt.Println(text.FgYellow.Sprintf("This language doens't needs to specify the Project Name"))
+		os.Exit(1)
+
+	}
 	cmd := exec.Command("node", "-v")
 	nodeVersionOutput, err := cmd.Output()
 	if err != nil {
@@ -32,10 +44,8 @@ func BuildTypescriptNodeDockefile(entryfile string) error {
 		return err
 	}
 
-	data := dockerfileData{
-		EntryFile: strings.TrimSuffix(entryfile, filepath.Ext(entryfile)),
-		Version:   nodeVersion,
-	}
+	input.EntryFile = strings.TrimSuffix(input.EntryFile, filepath.Ext(input.EntryFile))
+	input.Version = nodeVersion
 
 	file, err := os.Create("Dockerfile")
 	if err != nil {
@@ -44,7 +54,7 @@ func BuildTypescriptNodeDockefile(entryfile string) error {
 
 	defer file.Close()
 
-	applyTemplate(file, string(datafile), data)
+	applyTemplate(file, string(datafile), input)
 
 	return nil
 }
