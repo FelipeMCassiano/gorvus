@@ -5,9 +5,20 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+
+	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func BuildJavascriptDockerfile(entryfile string) error {
+func BuildJavascriptDockerfile(input DockerfileData) error {
+	if len(input.EntryFile) == 0 {
+		fmt.Println(text.FgYellow.Sprint("> You must specify the entry file, use `--entry-file` or `-e`"))
+		os.Exit(1)
+	}
+	if len(input.ProjectName) >= 1 {
+		fmt.Println(text.FgYellow.Sprintf("This language doens't needs to specify the Project Name"))
+		os.Exit(1)
+
+	}
 	cmd := exec.Command("node", "-v")
 	nodeVersionOutput, err := cmd.Output()
 	if err != nil {
@@ -28,19 +39,17 @@ func BuildJavascriptDockerfile(entryfile string) error {
 	if err != nil {
 		return err
 	}
-	data := dockerfileData{
-		EntryFile: entryfile,
-		Version:   nodeVersion,
-	}
 
 	file, err := os.Create("Dockerfile")
 	if err != nil {
 		return fmt.Errorf("failed to creating Dockerfile: %s", err.Error())
 	}
 
+	input.Version = nodeVersion
+
 	defer file.Close()
 
-	applyTemplate(file, string(datafile), data)
+	applyTemplate(file, string(datafile), input)
 
 	return nil
 }

@@ -5,9 +5,22 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+
+	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func BuildRustDockerfile(projectName string) error {
+func BuildRustDockerfile(input DockerfileData) error {
+	if len(input.ProjectName) == 0 {
+		fmt.Println(
+			text.FgYellow.Sprintf("You must specify the project name"),
+		)
+		os.Exit(1)
+	}
+
+	if len(input.EntryFile) >= 1 {
+		fmt.Println(text.FgYellow.Sprintf("This language doens't needs to specify the EntryFile"))
+		os.Exit(1)
+	}
 	cmd := exec.Command("cargo", "-V")
 	rustVersionOutput, err := cmd.Output()
 	if err != nil {
@@ -30,10 +43,7 @@ func BuildRustDockerfile(projectName string) error {
 		return err
 	}
 
-	data := dockerfileData{
-		ProjectName: projectName,
-		Version:     rustVersion,
-	}
+	input.Version = rustVersion
 
 	file, err := os.Create("Dockerfile")
 	if err != nil {
@@ -42,7 +52,7 @@ func BuildRustDockerfile(projectName string) error {
 	}
 	defer file.Close()
 
-	applyTemplate(file, string(datafile), data)
+	applyTemplate(file, string(datafile), input)
 
 	return nil
 }
