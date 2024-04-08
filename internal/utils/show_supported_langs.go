@@ -1,6 +1,10 @@
 package utils
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/jedib0t/go-pretty/v6/text"
+)
 
 var supportedLangs = map[string]bool{
 	"go":      true,
@@ -11,7 +15,7 @@ var supportedLangs = map[string]bool{
 }
 
 func ShowSupportedLangs() {
-	fmt.Println("supported languages:")
+	fmt.Println(text.FgGreen.Sprint("Supported languages") + ":")
 	for k := range supportedLangs {
 		fmt.Println("  " + k)
 	}

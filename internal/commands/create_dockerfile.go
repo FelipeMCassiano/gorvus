@@ -7,6 +7,7 @@ import (
 
 	"github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/FelipeMCassiano/gorvus/internal/utils"
+	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/spf13/cobra"
 )
 
@@ -18,8 +19,9 @@ func generateDockerfile() *cobra.Command {
 	const defaultProjectName = "myproject"
 
 	cmd := &cobra.Command{
-		Use:   "create-dockerfile",
-		Short: "Create Dockerfile based on input language and project name",
+		Use:     "create-dockerfile",
+		Short:   "Create Dockerfile based on input language and project name",
+		Aliases: []string{"gend", "generate-dockerfile"},
 		Run: func(cmd *cobra.Command, args []string) {
 			if listLanguages {
 				utils.ShowSupportedLangs()
@@ -27,74 +29,76 @@ func generateDockerfile() *cobra.Command {
 			}
 
 			if len(language) == 0 {
-				fmt.Println("\n> You must specify the language, use --language or -l")
+				fmt.Println(text.FgYellow.Sprint("> You must specify the language, use --language or -l"))
 				os.Exit(1)
-
 			}
 
 			if len(projectName) == 0 {
-				fmt.Println("\n> WARN:")
-				fmt.Printf("\n>You haven’t specified the project. If the language requires project name, it will be created with %s", defaultProjectName)
+				fmt.Println(
+					text.FgYellow.Sprintf("> Warn: You haven’t specified the project. If the language requires project name, it will be created with %s",
+						defaultProjectName,
+					),
+				)
 			}
 
 			utils.VerifyIfLangIsSupported(language)
 
 			if strings.ToLower(language) == "go" {
 				if err := builders.BuildGoDockerfile(projectName); err != nil {
-					fmt.Printf("error: %s", err.Error())
+					fmt.Println(text.FgRed.Sprintf("error: %s", err.Error()))
 					os.Exit(1)
 				}
 			}
 
 			if strings.ToLower(language) == "rust" {
 				if err := builders.BuildRustDockerfile(projectName); err != nil {
-					fmt.Printf("error: %s", err.Error())
+					fmt.Println(text.FgRed.Sprintf("error: %s", err.Error()))
 					os.Exit(1)
 				}
 			}
 
 			if strings.ToLower(language) == "node-ts" {
 				if len(entryFile) == 0 {
-					fmt.Println("\n> You must specify the entry file, use `--entry-file` or `-e`")
-					os.Exit(1)
-				}
-				if err := builders.BuildTypescriptNodeDockefile(entryFile); err != nil {
-					fmt.Printf("error: %s", err.Error())
+					fmt.Println(text.FgYellow.Sprint("> You must specify the entry file, use `--entry-file` or `-e`"))
 					os.Exit(1)
 				}
 
+				if err := builders.BuildTypescriptNodeDockefile(entryFile); err != nil {
+					fmt.Println(text.FgRed.Sprintf("error: %s", err.Error()))
+					os.Exit(1)
+				}
 			}
 
 			if strings.ToLower(language) == "node-js" {
 				if len(entryFile) == 0 {
-					fmt.Println("\n> You must specify the entry file, use `--entry-file` or `-e`")
-					os.Exit(1)
-				}
-				if err := builders.BuildJavascriptDockerfile(entryFile); err != nil {
-					fmt.Printf("error: %s", err.Error())
+					fmt.Println(text.FgYellow.Sprint("> You must specify the entry file, use `--entry-file` or `-e`"))
 					os.Exit(1)
 				}
 
+				if err := builders.BuildJavascriptDockerfile(entryFile); err != nil {
+					fmt.Println(text.FgRed.Sprintf("error: %s", err.Error()))
+					os.Exit(1)
+				}
 			}
 
 			if strings.ToLower(language) == "bun-tsx" {
 				if len(entryFile) == 0 {
-					fmt.Println("\n> You must specify the entry file, use `--entry-file` or `-e`")
+					fmt.Println(text.FgYellow.Sprint("> You must specify the entry file, use `--entry-file` or `-e`"))
 					os.Exit(1)
 				}
 
 				if !strings.Contains(entryFile, ".ts") && !strings.Contains(entryFile, ".js") {
-					fmt.Println("\n> You must choose between files types .js or .ts")
+					fmt.Println(text.FgYellow.Sprint("> You must choose between files types .js or .ts"))
 					os.Exit(1)
 				}
 
 				if err := builders.BuildTsxBunDockerfile(entryFile); err != nil {
-					fmt.Printf("error: %s", err.Error())
+					fmt.Println(text.FgRed.Sprintf("error: %s", err.Error()))
 					os.Exit(1)
 				}
-
 			}
-			fmt.Println("Dockerfile created succesfully")
+
+			fmt.Println(text.FgGreen.Sprint("Dockerfile created succesfully!"))
 		},
 	}
 

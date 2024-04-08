@@ -3,13 +3,17 @@ package utils
 import (
 	"fmt"
 	"os"
+
+	"github.com/jedib0t/go-pretty/v6/text"
 )
 
 func VerifyIfLangIsSupported(language string) {
 	_, ok := supportedLangs[language]
 
 	if !ok {
-		fmt.Printf("The language '%s' is not supported\n", language)
+		fmt.Println(
+			text.FgRed.Sprintf("The language '%s' is not supported.", language),
+		)
 
 		similarLangs := findSimilarLangs(language)
 		if similarLangs != "" {
