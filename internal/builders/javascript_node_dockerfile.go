@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"strings"
 
 	"github.com/jedib0t/go-pretty/v6/text"
 )
@@ -12,6 +13,12 @@ import (
 func BuildJavascriptDockerfile(input DockerfileData) error {
 	if len(input.EntryFile) == 0 {
 		fmt.Println(text.FgYellow.Sprint("> You must specify the entry file, use `--entry-file` or `-e`"))
+		os.Exit(1)
+	}
+
+	if strings.Contains(input.EntryFile, ".ts") {
+		fmt.Println(text.FgYellow.Sprint("> Only allowed .js files"))
+
 		os.Exit(1)
 	}
 	if len(input.ProjectName) >= 1 {

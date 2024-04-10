@@ -18,6 +18,12 @@ func BuildTypescriptNodeDockefile(input DockerfileData) error {
 		os.Exit(1)
 	}
 
+	if strings.Contains(input.EntryFile, ".js") {
+		fmt.Println(text.FgYellow.Sprint("> Only allowed .ts files"))
+
+		os.Exit(1)
+	}
+
 	if len(input.ProjectName) >= 1 {
 		fmt.Println(text.FgYellow.Sprintf("This language doens't needs to specify the Project Name"))
 		os.Exit(1)
