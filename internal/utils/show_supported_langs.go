@@ -12,7 +12,7 @@ var supportedLangs = map[string]func(builders.DockerfileData) error{
 	"rust":    builders.BuildRustDockerfile,
 	"node-ts": builders.BuildTypescriptNodeDockefile,
 	"node-js": builders.BuildJavascriptDockerfile,
-	"bun-tsx": builders.BuildTsxBunDockerfile,
+	"bun":     builders.BuildBunDockerfile,
 }
 
 func ShowSupportedLangs() {
