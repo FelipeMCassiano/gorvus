@@ -47,7 +47,7 @@ func CreateComposeCommand() *cobra.Command {
 	}
 
 	composeNetworkCmd := &cobra.Command{
-		Use:   "create-net",
+		Use:   "add-net",
 		Short: "Adds a new network into docker-compose.yml",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(networkName) == 0 {
