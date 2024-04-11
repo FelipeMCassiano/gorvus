@@ -13,6 +13,7 @@ import (
 
 type Service struct {
 	Image       string            `yaml:"image"`
+	Hostname    string            `yaml:"hostname"`
 	Environment map[string]string `yaml:"environment"`
 	Ports       []string          `yaml:"ports"`
 	Networks    []string          `yaml:"networks"`
@@ -34,8 +35,9 @@ type DockerCompose struct {
 func CreateComposeCommand() *cobra.Command {
 	var serviceNameFlag string
 	var serviceImageFlag string
-	var servicePortsFlag string
+	var servicePortsFlag []string
 	var serviceNetworksFlags []string
+	var serviceHostnameFlag string
 
 	var networkName string
 	var networkDriver string
@@ -131,6 +133,11 @@ func CreateComposeCommand() *cobra.Command {
 				cmd.Help()
 				os.Exit(1)
 			}
+			if len(serviceHostnameFlag) == 0 {
+				fmt.Println(text.FgRed.Sprint("\n You must specify the hostname of the service, use `--hostname` or `-h`"))
+				cmd.Help()
+				os.Exit(1)
+			}
 
 			envs := viper.GetStringMapString("envs")
 
@@ -179,11 +186,10 @@ func CreateComposeCommand() *cobra.Command {
 
 			service := Service{
 				Image:       serviceImageFlag,
+				Hostname:    serviceHostnameFlag,
 				Environment: envs,
 				Networks:    serviceNetworksFlags,
-				Ports: []string{
-					servicePortsFlag,
-				},
+				Ports:       servicePortsFlag,
 			}
 
 			//! composeYml will be mutated
@@ -206,10 +212,11 @@ func CreateComposeCommand() *cobra.Command {
 
 	composeAddCmd.Flags().StringVarP(&serviceNameFlag, "service", "s", "", "sets the service name in docker-compose")
 	composeAddCmd.Flags().StringVarP(&serviceImageFlag, "image", "i", "", "sets the service image in docker-compose")
-	composeAddCmd.Flags().StringVarP(&servicePortsFlag, "ports", "p", "", "sets the service port in service in docker-compose")
+	composeAddCmd.Flags().StringSliceVarP(&servicePortsFlag, "ports", "p", []string{}, "sets the service port in service in docker-compose")
 	composeAddCmd.Flags().StringToStringP("envs", "e", map[string]string{}, "sets an service environment variable in docker-compose")
 	viper.BindPFlag("envs", composeAddCmd.Flags().Lookup("envs"))
 	composeAddCmd.Flags().StringSliceVarP(&serviceNetworksFlags, "networks", "n", []string{}, "sets the service network in docker-compose")
+	composeAddCmd.Flags().StringVarP(&serviceHostnameFlag, "hostname", "o", "", "sets the service hostname in docker-compose")
 
 	composeAddCmd.MarkFlagRequired("service")
 	composeAddCmd.MarkFlagRequired("image")
