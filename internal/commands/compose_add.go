@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -39,40 +40,89 @@ func CreateComposeCommand() *cobra.Command {
 	var serviceNetworksFlags []string
 	var serviceHostnameFlag string
 
-	var networkName string
-	var networkDriver string
-	var nameDockerNetwork string
+	var networkNameFlag string
+	var networkDriverFlag string
+	var nameDockerNetworkFlag string
+
+	var composeTemplateFlag string
+	var composeVersionFlag string
+	var composeImageVersionFlag string
+	var composeDbNameFlag string
+	var composeUserFlag string
+	var composePassFlag string
+	var composePortsFlag string
+	var composeCpuFlag string
+	var composeMemoryFlag string
+	var composeNetworkName string
 
 	composeCmd := &cobra.Command{
 		Use:   "compose",
 		Short: "Manages current directory's docker-compose.yml",
 	}
 
+	composeCreateCmd := &cobra.Command{
+		Use:   "create",
+		Short: "Create a new docker-compose.yml",
+		Run: func(cmd *cobra.Command, args []string) {
+			if len(composeTemplateFlag) == 0 {
+				fmt.Println(text.FgYellow.Sprint("\n No template specified. Creating an empty docker-compose.yml file"))
+				os.Create("docker-compose.yml")
+				os.Exit(0)
+			}
+
+			input := builders.ComposeData{
+				Version:      composeVersionFlag,
+				ImageVersion: composeImageVersionFlag,
+				DbName:       composeDbNameFlag,
+				DbUser:       composeUserFlag,
+				DbPass:       composePassFlag,
+				Ports:        composePortsFlag,
+				Cpu:          composeCpuFlag,
+				Memory:       composeMemoryFlag,
+				NetworkName:  composeNetworkName,
+			}
+			workingDir, getWdError := os.Getwd()
+			if getWdError != nil {
+				fmt.Println(text.FgRed.Sprint("oops! could not get current working directory."))
+				os.Exit(1)
+			}
+			dockerComposePath := path.Join(workingDir, "docker-compose.yml")
+
+			if _, err := os.Stat(dockerComposePath); err == nil {
+				fmt.Println(text.FgRed.Sprint("docker-compose.yml already exists. If you want to add a new service use `compose add` command"))
+				os.Exit(1)
+			}
+
+			builders.BuilderComposefile(input, composeTemplateFlag)
+			fmt.Println(text.FgGreen.Sprint("\ndocker-compose.yml created succesfully!"))
+		},
+	}
+
 	composeNetworkCmd := &cobra.Command{
 		Use:   "add-net",
 		Short: "Adds a new network into docker-compose.yml",
 		Run: func(cmd *cobra.Command, args []string) {
-			if len(networkName) == 0 {
+			if len(networkNameFlag) == 0 {
 				fmt.Println(text.FgRed.Sprint("\n You must specify the network name, use `--name` or `-n`"))
 				cmd.Help()
 				os.Exit(1)
 			}
 
-			if len(networkDriver) == 0 {
+			if len(networkDriverFlag) == 0 {
 				fmt.Println(text.FgRed.Sprint("\n You must specify the network driver, use `--driver` or `-d`"))
 				cmd.Help()
 				os.Exit(1)
 			}
 
-			if len(nameDockerNetwork) == 0 {
+			if len(nameDockerNetworkFlag) == 0 {
 				fmt.Println(text.FgRed.Sprint("\n You must specify the network docker network, use `--name-docker` or `-N`"))
 				cmd.Help()
 				os.Exit(1)
 			}
 
 			network := Network{
-				Driver: networkDriver,
-				Name:   nameDockerNetwork,
+				Driver: networkDriverFlag,
+				Name:   nameDockerNetworkFlag,
 			}
 			workingDir, getWdError := os.Getwd()
 			if getWdError != nil {
@@ -102,7 +152,7 @@ func CreateComposeCommand() *cobra.Command {
 				os.Exit(1)
 			}
 
-			if err := networkAdd(&composeYml, networkName, network); err != nil {
+			if err := networkAdd(&composeYml, networkNameFlag, network); err != nil {
 				fmt.Println(text.FgRed.Sprint(err))
 				return
 
@@ -115,7 +165,7 @@ func CreateComposeCommand() *cobra.Command {
 			}
 
 			os.WriteFile(dockerComposePath, newComposeYmlAsBytes, dockerComposeFileInfo.Mode())
-			fmt.Println(text.FgGreen.Sprint("network added to docker-compose.yml"))
+			fmt.Println(text.FgGreen.Sprint("Network added to docker-compose.yml succesfully!"))
 		},
 	}
 
@@ -206,7 +256,7 @@ func CreateComposeCommand() *cobra.Command {
 			}
 
 			os.WriteFile(dockerComposePath, newComposeYmlAsBytes, dockerComposeFileInfo.Mode())
-			fmt.Println(text.FgGreen.Sprint("service added to docker-compose.yml"))
+			fmt.Println(text.FgGreen.Sprint("service added to docker-compose.yml succesfully!"))
 		},
 	}
 
@@ -221,15 +271,27 @@ func CreateComposeCommand() *cobra.Command {
 	composeAddCmd.MarkFlagRequired("service")
 	composeAddCmd.MarkFlagRequired("image")
 
-	composeNetworkCmd.Flags().StringVarP(&networkName, "name", "n", "", "Set the network name")
-	composeNetworkCmd.Flags().StringVarP(&networkDriver, "driver", "d", "", "Set the network driver")
-	composeNetworkCmd.Flags().StringVarP(&nameDockerNetwork, "name-docker", "x", "", "Set the Docker network name")
+	composeNetworkCmd.Flags().StringVarP(&networkNameFlag, "name", "n", "", "Set the network name")
+	composeNetworkCmd.Flags().StringVarP(&networkDriverFlag, "driver", "d", "", "Set the network driver")
+	composeNetworkCmd.Flags().StringVarP(&nameDockerNetworkFlag, "name-docker", "x", "", "Set the Docker network name")
 	composeNetworkCmd.MarkFlagRequired("name")
 	composeNetworkCmd.MarkFlagRequired("driver")
 	composeNetworkCmd.MarkFlagRequired("name-docker")
 
+	composeCreateCmd.Flags().StringVarP(&composeTemplateFlag, "template", "t", "", "defines template")
+	composeCreateCmd.Flags().StringVarP(&composeVersionFlag, "version", "v", "", "defines compose version")
+	composeCreateCmd.Flags().StringVarP(&composeImageVersionFlag, "image-version", "i", "", "defines image version")
+	composeCreateCmd.Flags().StringVarP(&composeDbNameFlag, "db-name", "d", "", "defines db name environment")
+	composeCreateCmd.Flags().StringVarP(&composeUserFlag, "user", "u", "", "defines user environment")
+	composeCreateCmd.Flags().StringVarP(&composePassFlag, "password", "a", "", "defines password environment")
+	composeCreateCmd.Flags().StringVarP(&composePortsFlag, "ports", "p", "", "defines ports")
+	composeCreateCmd.Flags().StringVarP(&composeCpuFlag, "cpu", "c", "", "defines cpu deploy resources")
+	composeCreateCmd.Flags().StringVarP(&composeMemoryFlag, "memory", "m", "", "defines memory deploy resources")
+	composeCreateCmd.Flags().StringVarP(&composeNetworkName, "network-name", "n", "", "defines network name")
+
 	composeCmd.AddCommand(composeAddCmd)
 	composeCmd.AddCommand(composeNetworkCmd)
+	composeCmd.AddCommand(composeCreateCmd)
 
 	return composeCmd
 }

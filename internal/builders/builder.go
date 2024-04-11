@@ -17,8 +17,20 @@ type DockerfileData struct {
 	ProjectName string
 }
 
-func applyTemplate(writer io.Writer, languageTemplate string, data interface{}) {
-	tmpl, err := template.New("dockerfile").Parse(languageTemplate)
+type ComposeData struct {
+	Version      string
+	ImageVersion string
+	DbName       string
+	DbUser       string
+	DbPass       string
+	Ports        string
+	Cpu          string
+	Memory       string
+	NetworkName  string
+}
+
+func applyTemplate(writer io.Writer, Template string, data interface{}) {
+	tmpl, err := template.New("dockerfile").Parse(Template)
 	if err != nil {
 		fmt.Println("Error parsing template:", err)
 		os.Exit(1)
