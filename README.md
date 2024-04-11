@@ -8,7 +8,7 @@
 ## Features
 
 - **Dockerfile Generation**: Generate Dockerfiles for your projects with ease.
-- **docker-compose.yml Generation**: Coming soon...
+- **docker-compose.yml Generation**: Generate docker-compose.yml files to orchestrate multi-container Docker applications.
 - **Customizable Templates**: Configure templates to suit your project's specific requirements.
 - **Command-line Interface**: Use an intuitive and fancy interface to maximize your experience.
 
@@ -33,9 +33,21 @@ gorvus createDockerfile --language<language> --projectName<projectName>
 > [!NOTE]
 > Currently, only the languages Go, Rust, Node(js and ts) and Bun supports Dockerfile generation.
 
-### Generate docker-compose.yml (Coming Soon)
+### Generate docker-compose.yml
 
-The feature to generate a docker-compose.yml file will be available soon. Stay tuned for updates!
+```bash
+gorvus compose create --template<template>
+```
+
+> [!NOTE]
+> Currently, only Postgres have support for docker-compose with template generation.
+
+#### Add Services into docker-compose.yml
+
+```bash
+gorvus compose add --image<image> --service<serviceName> --ports<ports> --env<environment> --networks<networkName> --hostname<hostname>
+```
+
 
 ## Contributing
 
