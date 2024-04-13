@@ -48,7 +48,7 @@ func applyTemplate(writer io.Writer, Template string, data interface{}) {
 
 func validateProjectName(input string) error {
 	if len(input) < 1 {
-		return errors.New("The project name cannot be blank")
+		return errors.New("The project name is required")
 	}
 
 	return nil
@@ -56,7 +56,7 @@ func validateProjectName(input string) error {
 
 func validateEntryfile(input string) error {
 	if len(input) < 1 {
-		return errors.New("The entry file cannot be blank")
+		return errors.New("The entry file is required")
 	}
 
 	return nil
