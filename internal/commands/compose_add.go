@@ -94,7 +94,7 @@ func CreateComposeCommand() *cobra.Command {
 			}
 
 			builders.BuilderComposefile(input, composeTemplateFlag)
-			fmt.Println(text.FgGreen.Sprint("\ndocker-compose.yml created succesfully!"))
+			fmt.Println(text.FgGreen.Sprint("docker-compose.yml created succesfully!"))
 		},
 	}
 

@@ -13,10 +13,11 @@ import (
 
 func BuildGoDockerfile(input DockerfileData) error {
 	if len(input.ProjectName) == 0 {
-		fmt.Println(
-			text.FgYellow.Sprintf("> You must specify the project name, use `--project-name` or -p"),
-		)
-		os.Exit(1)
+		pN, err := setProjectName()
+		if err != nil {
+			os.Exit(1)
+		}
+		input.ProjectName = pN
 	}
 
 	if len(input.EntryFile) >= 1 {

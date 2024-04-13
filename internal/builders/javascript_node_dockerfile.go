@@ -12,8 +12,11 @@ import (
 
 func BuildJavascriptDockerfile(input DockerfileData) error {
 	if len(input.EntryFile) == 0 {
-		fmt.Println(text.FgYellow.Sprint("> You must specify the entry file, use `--entry-file` or `-e`"))
-		os.Exit(1)
+		eF, err := setEntryfile()
+		if err != nil {
+			os.Exit(1)
+		}
+		input.EntryFile = eF
 	}
 
 	if strings.Contains(input.EntryFile, ".ts") {
