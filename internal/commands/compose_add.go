@@ -1,12 +1,14 @@
 package commands
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path"
 
 	"github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/jedib0t/go-pretty/v6/text"
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
@@ -64,10 +66,31 @@ func CreateComposeCommand() *cobra.Command {
 		Use:   "create",
 		Short: "Create a new docker-compose.yml",
 		Run: func(cmd *cobra.Command, args []string) {
+			workingDir, getWdError := os.Getwd()
+			if getWdError != nil {
+				fmt.Println(text.FgRed.Sprint("oops! could not get current working directory."))
+				os.Exit(1)
+			}
+			dockerComposePath := path.Join(workingDir, "docker-compose.yml")
+
+			if _, err := os.Stat(dockerComposePath); err == nil {
+				fmt.Println(text.FgRed.Sprint("docker-compose.yml already exists. If you want to add a new service use `compose add` command"))
+				os.Exit(1)
+			}
+
 			if len(composeTemplateFlag) == 0 {
-				fmt.Println(text.FgYellow.Sprint("\n No template specified. Creating an empty docker-compose.yml file"))
-				os.Create("docker-compose.yml")
-				os.Exit(0)
+				prompt := promptui.Select{
+					Label: "Select an template",
+					Items: []string{"Postgres", "None"},
+				}
+				_, composeTemplateFlag, _ = prompt.Run()
+
+				if composeTemplateFlag == "None" {
+					fmt.Println(text.FgYellow.Sprint("\n No template specified. Creating an empty docker-compose.yml file"))
+					os.Create("docker-compose.yml")
+					os.Exit(0)
+				}
+
 			}
 
 			input := builders.ComposeData{
@@ -81,19 +104,11 @@ func CreateComposeCommand() *cobra.Command {
 				Memory:       composeMemoryFlag,
 				NetworkName:  composeNetworkName,
 			}
-			workingDir, getWdError := os.Getwd()
-			if getWdError != nil {
-				fmt.Println(text.FgRed.Sprint("oops! could not get current working directory."))
-				os.Exit(1)
-			}
-			dockerComposePath := path.Join(workingDir, "docker-compose.yml")
 
-			if _, err := os.Stat(dockerComposePath); err == nil {
-				fmt.Println(text.FgRed.Sprint("docker-compose.yml already exists. If you want to add a new service use `compose add` command"))
-				os.Exit(1)
+			if err := builders.BuilderComposefile(input, composeTemplateFlag); err != nil {
+				fmt.Println("Error:", err)
+				return
 			}
-
-			builders.BuilderComposefile(input, composeTemplateFlag)
 			fmt.Println(text.FgGreen.Sprint("docker-compose.yml created succesfully!"))
 		},
 	}
@@ -173,23 +188,37 @@ func CreateComposeCommand() *cobra.Command {
 		Use:   "add",
 		Short: "Adds a new service into docker-compose.yml",
 		Run: func(cmd *cobra.Command, args []string) {
+			envs := viper.GetStringMapString("envs")
+
 			if len(serviceNameFlag) == 0 {
-				fmt.Println(text.FgRed.Sprint("\n You must specify the name of the service, use `--name` or `-n`"))
-				cmd.Help()
-				os.Exit(1)
-			}
-			if len(serviceImageFlag) == 0 {
-				fmt.Println(text.FgRed.Sprint("\n You must specify the image of the service, use `--serviceimage` or `-i`"))
-				cmd.Help()
-				os.Exit(1)
-			}
-			if len(serviceHostnameFlag) == 0 {
-				fmt.Println(text.FgRed.Sprint("\n You must specify the hostname of the service, use `--hostname` or `-h`"))
-				cmd.Help()
-				os.Exit(1)
+
+				validate := func(input string) error {
+					if len(input) < 1 {
+						return errors.New("Service Name is required")
+					}
+					return nil
+				}
+
+				prompt := promptui.Prompt{
+					Label:    "Type your service name",
+					Validate: validate,
+				}
+				sN, err := prompt.Run()
+				if err != nil {
+					os.Exit(1)
+				}
+
+				serviceNameFlag = sN
+
 			}
 
-			envs := viper.GetStringMapString("envs")
+			service := Service{
+				Image:       serviceImageFlag,
+				Hostname:    serviceHostnameFlag,
+				Environment: envs,
+				Networks:    serviceNetworksFlags,
+				Ports:       servicePortsFlag,
+			}
 
 			workingDir, getWdError := os.Getwd()
 			if getWdError != nil {
@@ -231,17 +260,6 @@ func CreateComposeCommand() *cobra.Command {
 
 				}
 			}
-
-			// TODO add flag and creation for networks
-
-			service := Service{
-				Image:       serviceImageFlag,
-				Hostname:    serviceHostnameFlag,
-				Environment: envs,
-				Networks:    serviceNetworksFlags,
-				Ports:       servicePortsFlag,
-			}
-
 			//! composeYml will be mutated
 			if addServiceError := composeAdd(&composeYml, serviceNameFlag, service); addServiceError != nil {
 				fmt.Println(text.FgRed.Sprint(addServiceError))
@@ -267,9 +285,6 @@ func CreateComposeCommand() *cobra.Command {
 	viper.BindPFlag("envs", composeAddCmd.Flags().Lookup("envs"))
 	composeAddCmd.Flags().StringSliceVarP(&serviceNetworksFlags, "networks", "n", []string{}, "sets the service network in docker-compose")
 	composeAddCmd.Flags().StringVarP(&serviceHostnameFlag, "hostname", "o", "", "sets the service hostname in docker-compose")
-
-	composeAddCmd.MarkFlagRequired("service")
-	composeAddCmd.MarkFlagRequired("image")
 
 	composeNetworkCmd.Flags().StringVarP(&networkNameFlag, "name", "n", "", "Set the network name")
 	composeNetworkCmd.Flags().StringVarP(&networkDriverFlag, "driver", "d", "", "Set the network driver")
@@ -320,6 +335,10 @@ func composeAdd(compose *DockerCompose, serviceName string, service Service) err
 		compose.Services = make(map[string]Service)
 	}
 
+	if len(service.Image) == 0 && len(service.Hostname) == 0 {
+		setServiceSettings(&service)
+	}
+
 	// composeServices := (*compose)["services"].(map[string]interface{})
 
 	// search for conflicting service names
@@ -333,4 +352,76 @@ func composeAdd(compose *DockerCompose, serviceName string, service Service) err
 	compose.Services[serviceName] = service
 
 	return nil
+}
+
+func setServiceSettings(service *Service) {
+	imagePrompt := promptui.Prompt{
+		Label: "Image",
+	}
+	image, _ := imagePrompt.Run()
+	service.Image = image
+
+	hostnamePrompt := promptui.Prompt{
+		Label: "Hostname",
+	}
+	hostname, _ := hostnamePrompt.Run()
+	service.Hostname = hostname
+	for {
+		promptKey := promptui.Prompt{
+			Label: "Enter a key for the Environment map (or 'stop' to finish)",
+		}
+		key, err := promptKey.Run()
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		if key == "stop" {
+			break
+		}
+
+		promptValue := promptui.Prompt{
+			Label: "Enter a value for the key '" + key + "'",
+		}
+		value, err := promptValue.Run()
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		service.Environment[key] = value
+	}
+	for {
+		promptPort := promptui.Prompt{
+			Label: "Enter a port for the Ports slice (or 'stop' to finish)",
+		}
+		port, err := promptPort.Run()
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		if port == "stop" {
+			break
+		}
+
+		service.Ports = append(service.Ports, port)
+	}
+	for {
+		promptNetwork := promptui.Prompt{
+			Label: "Enter a network for Networks (or 'stop' to finish) ",
+		}
+
+		network, err := promptNetwork.Run()
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		if network == "stop" {
+			break
+		}
+
+		service.Networks = append(service.Networks, network)
+	}
 }
