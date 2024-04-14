@@ -87,3 +87,10 @@ func setEntryfile() (string, error) {
 	}
 	return entryfile, nil
 }
+
+func validatePrompt(input string) error {
+	if len(input) < 1 {
+		return errors.New("This field is required")
+	}
+	return nil
+}

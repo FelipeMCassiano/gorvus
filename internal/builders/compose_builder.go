@@ -50,7 +50,8 @@ func setComposeSettings(compose *ComposeData) *ComposeData {
 
 	for _, p := range prompts {
 		prompt := promptui.Prompt{
-			Label: p.Label,
+			Label:    p.Label,
+			Validate: validatePrompt,
 		}
 
 		result, err := prompt.Run()
