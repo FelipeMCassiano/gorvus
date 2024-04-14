@@ -261,13 +261,15 @@ func CreateComposeCommand() *cobra.Command {
 				}
 			}
 			//! composeYml will be mutated
-			if addServiceError := composeAdd(&composeYml, serviceNameFlag, service); addServiceError != nil {
+			newCompose, addServiceError := composeAdd(&composeYml, serviceNameFlag, service)
+			if addServiceError != nil {
 				fmt.Println(text.FgRed.Sprint(addServiceError))
 				return
+
 			}
 
 			// reupdate yml file in disk
-			newComposeYmlAsBytes, marshalError := yaml.Marshal(composeYml)
+			newComposeYmlAsBytes, marshalError := yaml.Marshal(newCompose)
 			if marshalError != nil {
 				fmt.Println(text.FgRed.Sprint("can't manage docker-compose.yml, the contents of the file are invalid."))
 				return
@@ -327,101 +329,110 @@ func networkAdd(compose *DockerCompose, networkName string, network Network) err
 	return nil
 }
 
-func composeAdd(compose *DockerCompose, serviceName string, service Service) error {
+func composeAdd(compose *DockerCompose, serviceName string, service Service) (*DockerCompose, error) {
 	// todo check for version?
 	// is compose["services"] uninitialized? (kinda hacky, but it settles for now)
+	newCompose := compose
 
 	if compose.Services == nil {
 		compose.Services = make(map[string]Service)
 	}
 
-	if len(service.Image) == 0 && len(service.Hostname) == 0 {
-		setServiceSettings(&service)
-	}
-
-	// composeServices := (*compose)["services"].(map[string]interface{})
+	newservice := setServiceSettings(&service)
 
 	// search for conflicting service names
-	for inComposeServiceName := range compose.Services {
+	for inComposeServiceName := range newCompose.Services {
 		if inComposeServiceName == serviceName {
-			return fmt.Errorf("%s is conflicting with a service with same name", serviceName)
+			return nil, fmt.Errorf("%s is conflicting with a service with same name", serviceName)
 		}
 	}
 	// todo maybe prevent this side effect by returning new yml?
 	// add requested service into compose services
-	compose.Services[serviceName] = service
+	newCompose.Services[serviceName] = *newservice
 
-	return nil
+	return newCompose, nil
 }
 
-func setServiceSettings(service *Service) {
-	imagePrompt := promptui.Prompt{
-		Label: "Image",
+func setServiceSettings(service *Service) *Service {
+	data := service
+	if len(data.Image) == 0 {
+		imagePrompt := promptui.Prompt{
+			Label: "Image",
+		}
+		image, _ := imagePrompt.Run()
+		data.Image = image
 	}
-	image, _ := imagePrompt.Run()
-	service.Image = image
+	if len(data.Hostname) == 0 {
 
-	hostnamePrompt := promptui.Prompt{
-		Label: "Hostname",
+		hostnamePrompt := promptui.Prompt{
+			Label: "Hostname",
+		}
+		hostname, _ := hostnamePrompt.Run()
+		data.Hostname = hostname
 	}
-	hostname, _ := hostnamePrompt.Run()
-	service.Hostname = hostname
-	for {
-		promptKey := promptui.Prompt{
-			Label: "Enter a key for the Environment map (or 'stop' to finish)",
-		}
-		key, err := promptKey.Run()
-		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
-			return
-		}
+	if len(data.Environment) == 0 {
+		for {
+			promptKey := promptui.Prompt{
+				Label: "Enter a key for the Environment map (or 'stop' to finish)",
+			}
+			key, err := promptKey.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
+				return nil
+			}
 
-		if key == "stop" {
-			break
-		}
+			if key == "stop" {
+				break
+			}
 
-		promptValue := promptui.Prompt{
-			Label: "Enter a value for the key '" + key + "'",
-		}
-		value, err := promptValue.Run()
-		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
-			return
-		}
+			promptValue := promptui.Prompt{
+				Label: fmt.Sprintf("Enter a value for the key '%s'", key),
+			}
+			value, err := promptValue.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
+				return nil
+			}
 
-		service.Environment[key] = value
+			data.Environment[key] = value
+		}
 	}
-	for {
-		promptPort := promptui.Prompt{
-			Label: "Enter a port for the Ports slice (or 'stop' to finish)",
-		}
-		port, err := promptPort.Run()
-		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
-			return
-		}
+	if len(data.Ports) == 0 {
+		for {
+			promptPort := promptui.Prompt{
+				Label: "Enter a port for the Ports  (or 'stop' to finish)",
+			}
+			port, err := promptPort.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
+				return nil
+			}
 
-		if port == "stop" {
-			break
-		}
+			if port == "stop" {
+				break
+			}
 
-		service.Ports = append(service.Ports, port)
+			data.Ports = append(data.Ports, port)
+		}
 	}
-	for {
-		promptNetwork := promptui.Prompt{
-			Label: "Enter a network for Networks (or 'stop' to finish) ",
-		}
+	if len(data.Networks) == 0 {
+		for {
+			promptNetwork := promptui.Prompt{
+				Label: "Enter a network for Networks (or 'stop' to finish) ",
+			}
 
-		network, err := promptNetwork.Run()
-		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
-			return
-		}
+			network, err := promptNetwork.Run()
+			if err != nil {
+				fmt.Printf("Prompt failed %v\n", err)
+				return nil
+			}
 
-		if network == "stop" {
-			break
-		}
+			if network == "stop" {
+				break
+			}
 
-		service.Networks = append(service.Networks, network)
+			data.Networks = append(data.Networks, network)
+		}
 	}
+	return data
 }
