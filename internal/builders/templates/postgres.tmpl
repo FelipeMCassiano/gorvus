@@ -7,7 +7,7 @@ services:
     environment:
        POSTGRES_DB: {{.DbName}}
        POSTGRES_USER: {{.DbUser}}
-       POSTGRES_PASSWORD: {{.DbPass}} 
+       POSTGRES_PASSWORD: {{.DbPass}}
     ports:
         - "{{.Ports}}"
     deploy:

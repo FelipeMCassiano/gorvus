@@ -11,10 +11,11 @@ import (
 
 func BuildRustDockerfile(input DockerfileData) error {
 	if len(input.ProjectName) == 0 {
-		fmt.Println(
-			text.FgYellow.Sprintf("You must specify the project name"),
-		)
-		os.Exit(1)
+		pN, err := setProjectName()
+		if err != nil {
+			os.Exit(1)
+		}
+		input.ProjectName = pN
 	}
 
 	if len(input.EntryFile) >= 1 {
