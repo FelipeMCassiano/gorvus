@@ -1,5 +1,5 @@
 <div align='center'>
-  <h1>gorvus (beta)</h1>
+  <h1>Gorvus (Beta)</h1>
   <p>gorvus is a command-line interface (CLI) tool written in Go that simplifies the process of generating Dockerfiles and docker-compose.yml files for your projects. With gorvus, you can quickly scaffold Docker configurations without manual editing, saving time and effort.</p>
   <img src='https://img.shields.io/github/languages/top/FelipeMCassiano/gorvus' alt='GitHub top language' />
   <img src='https://img.shields.io/github/last-commit/FelipeMCassiano/gorvus' alt='GitHub last commit' />
@@ -25,7 +25,11 @@ go install github.com/FelipeMCassiano/gorvus/gorvus
 Once installed, you can use gorvus to generate Dockerfiles and docker-compose.yml files for your projects.
 
 ### Generate Dockerfile
-
+* You can use Gorvus interactively without flags:
+```bash
+gorvus gend
+```
+* OR specify language and project name:
 ```bash
 gorvus createDockerfile --language<language> --projectName<projectName>
 ```
@@ -34,20 +38,28 @@ gorvus createDockerfile --language<language> --projectName<projectName>
 > Currently, only the languages Go, Rust, Node(js and ts) and Bun supports Dockerfile generation.
 
 ### Generate docker-compose.yml
-
 ```bash
-gorvus compose create --template<template>
+gorvus compose 
 ```
 
 > [!NOTE]
 > Currently, only Postgres have support for docker-compose with template generation.
 
-#### Add Services into docker-compose.yml
-
+### Add Services into docker-compose.yml
+* You can use Gorvus interactively without flags, or specify service details:
 ```bash
-gorvus compose add --image<image> --service<serviceName> --ports<ports> --env<environment> --networks<networkName> --hostname<hostname>
+gorvus compose add
 ```
-#### Add Networks into docker-compose.yml
+* OR provide details using flags:
+```bash
+gorvus compose add --image<image> --service<serviceName> --ports<ports> --envs<environment> --networks<networkName> --hostname<hostname>
+```
+### Add Networks into docker-compose.yml
+* You can use Gorvus interactively without flags:
+```bash
+gorvus compose add-net
+```
+* OR specify network details:
 ```bash
 gorvus compose add-net --name<network name> --driver<network driver> --name-docker<reference this network when you're connecting containers>
 ```
