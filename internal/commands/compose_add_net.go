@@ -80,13 +80,14 @@ func CreateComposeAddNetCommand() *cobra.Command {
 				os.Exit(1)
 			}
 
-			if err := networkAdd(&composeYml, networkNameFlag, network); err != nil {
+			newCompose, err := networkAdd(&composeYml, networkNameFlag, network)
+			if err != nil {
 				fmt.Println(text.FgRed.Sprint(err))
 				return
 
 			}
 
-			newComposeYmlAsBytes, marshalError := yaml.Marshal(composeYml)
+			newComposeYmlAsBytes, marshalError := yaml.Marshal(newCompose)
 			if marshalError != nil {
 				fmt.Println(text.FgRed.Sprint("can't manage docker-compose.yml, the contents of the file are invalid."))
 				return
@@ -104,18 +105,19 @@ func CreateComposeAddNetCommand() *cobra.Command {
 	return composeNetworkCmd
 }
 
-func networkAdd(compose *DockerCompose, networkName string, network Network) error {
-	if compose.Networks == nil {
-		compose.Networks = make(Networks)
+func networkAdd(compose *DockerCompose, networkName string, network Network) (*DockerCompose, error) {
+	newCompose := compose
+	if newCompose.Networks == nil {
+		newCompose.Networks = make(Networks)
 	}
 
-	for inComposeNetworkName := range compose.Networks {
+	for inComposeNetworkName := range newCompose.Networks {
 		if inComposeNetworkName == networkName {
-			return fmt.Errorf("%s is conflicting with a service with same name", networkName)
+			return nil, fmt.Errorf("%s is conflicting with a service with same name", networkName)
 		}
 	}
 
-	compose.Networks[networkName] = network
+	newCompose.Networks[networkName] = network
 
-	return nil
+	return newCompose, nil
 }
