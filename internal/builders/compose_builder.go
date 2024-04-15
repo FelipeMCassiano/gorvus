@@ -9,8 +9,8 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-func BuilderComposefile(input ComposeData, template string) error {
-	compose := setComposeSettings(&input)
+func BuilderComposefile(template string) error {
+	compose := setComposeSettings()
 
 	path := fmt.Sprintf("templates/%s.tmpl", strings.ToLower(template))
 
@@ -30,8 +30,8 @@ func BuilderComposefile(input ComposeData, template string) error {
 	return nil
 }
 
-func setComposeSettings(compose *ComposeData) *ComposeData {
-	data := compose
+func setComposeSettings() *ComposeData {
+	data := new(ComposeData)
 
 	prompts := []struct {
 		Label   string
@@ -50,8 +50,7 @@ func setComposeSettings(compose *ComposeData) *ComposeData {
 
 	for _, p := range prompts {
 		prompt := promptui.Prompt{
-			Label:    p.Label,
-			Validate: validatePrompt,
+			Label: p.Label,
 		}
 
 		result, err := prompt.Run()
@@ -90,7 +89,7 @@ func setComposeSettings(compose *ComposeData) *ComposeData {
 	if len(data.NetworkName) == 0 {
 		data.NetworkName = "network"
 	}
-	fmt.Println(text.FgBlue.Sprint("If some field is empty, default configs will be applied. To view all flags in this command, type `compose create -h"))
+	fmt.Println(text.FgBlue.Sprint("If some field is empty, default configs will be applied."))
 
 	return data
 }
