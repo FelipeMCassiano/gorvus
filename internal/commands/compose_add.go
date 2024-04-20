@@ -78,13 +78,20 @@ func CreateComposeAddCommand() *cobra.Command {
 			}
 
 			if composeYml.Version == "" {
-				var answer string
-				fmt.Println("You want to update version? (y/n) ")
-				fmt.Scanln(&answer)
-				if answer == "y" {
-					var version string
-					fmt.Println("Type the desired version: ")
-					fmt.Scanln(&version)
+
+				prompt := promptui.Select{
+					Label: "It seems like your docker-compose file does not have a version defined. Would you like to define one?",
+					Items: []string{"yes", "no"},
+				}
+
+				_, answer, _ := prompt.Run()
+
+				if answer == "yes" {
+					promptVersion := promptui.Prompt{
+						Label:    "Type the disired version",
+						Validate: validatePrompt,
+					}
+					version, _ := promptVersion.Run()
 					composeYml.Version = version
 
 				}
