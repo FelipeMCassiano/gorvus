@@ -8,11 +8,13 @@ import (
 )
 
 var supportedLangs = map[string]func(builders.DockerfileData) error{
-	"go":      builders.BuildGoDockerfile,
-	"rust":    builders.BuildRustDockerfile,
-	"node-ts": builders.BuildTypescriptNodeDockefile,
-	"node-js": builders.BuildJavascriptDockerfile,
-	"bun":     builders.BuildBunDockerfile,
+	"go":            builders.BuildGoDockerfile,
+	"rust":          builders.BuildRustDockerfile,
+	"node-ts":       builders.BuildTypescriptNodeDockefile,
+	"node-js":       builders.BuildJavascriptDockerfile,
+	"bun":           builders.BuildBunDockerfile,
+	"csharp-dotnet": builders.BuildDotNetDockerfile,
+	"java-gradle":   builders.BuilderJavaGradleDockerfile,
 }
 
 func ShowSupportedLangs() {
