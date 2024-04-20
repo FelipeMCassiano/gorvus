@@ -5,6 +5,9 @@
   <img src='https://img.shields.io/github/last-commit/FelipeMCassiano/gorvus' alt='GitHub last commit' />
 </div>
 
+> [!TIP]
+> Looking for a dead-simple automation tool? [ruke](https://github.com/kauefraga/ruke) is waiting for you!
+
 ## Features
 
 - **Dockerfile Generation**: Generate Dockerfiles for your projects with ease.
