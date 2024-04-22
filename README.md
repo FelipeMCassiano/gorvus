@@ -67,6 +67,17 @@ gorvus compose add-net
 gorvus compose add-net --name<network name> --driver<network driver> --name-docker<reference this network when you're connecting containers>
 ```
 
+### Remove Services or Networks in docker-compose.yml
+
+* To remove a service
+```bash
+gorvus compose rm -s<service name>
+```
+* To remove a network
+```bash
+gorvus compose rm -n<network name>
+```
+
 ## Contributing
 
 If you're interested in contributing to this project, consider reading the [Contributing Guide](CONTRIBUTING.md)
