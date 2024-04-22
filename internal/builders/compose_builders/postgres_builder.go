@@ -1,18 +1,17 @@
-package builders
+package composebuilders
 
 import (
 	"fmt"
 	"os"
-	"strings"
 
-	"github.com/jedib0t/go-pretty/v6/text"
+	"github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/manifoldco/promptui"
 )
 
-func BuilderComposefile(template string) error {
-	compose := setComposeSettings()
+func PostgresBuilderComposefile() error {
+	compose := setPostgresSettings()
 
-	path := fmt.Sprintf("templates/%s.tmpl", strings.ToLower(template))
+	path := fmt.Sprintf("templates/%s.tmpl", "postgres")
 
 	datafile, err := templatesContent.ReadFile(path)
 	if err != nil {
@@ -25,27 +24,27 @@ func BuilderComposefile(template string) error {
 	}
 	defer file.Close()
 
-	applyTemplate(file, string(datafile), *compose)
+	builders.ApplyTemplate(file, string(datafile), *compose)
 
 	return nil
 }
 
-func setComposeSettings() *ComposeData {
+func setPostgresSettings() *ComposeData {
 	data := new(ComposeData)
 
 	prompts := []struct {
 		Label   string
 		Pointer *string
 	}{
-		{"docker-compose Version", &data.Version},
-		{"Image Version", &data.ImageVersion},
-		{"DB Name", &data.DbName},
-		{"DB User", &data.DbUser},
-		{"DB Password", &data.DbPass},
-		{"Ports", &data.Ports},
-		{"CPU", &data.Cpu},
-		{"Memory (MB)", &data.Memory},
-		{"Network Name", &data.NetworkName},
+		{"docker-compose Version (Default: 3.9)", &data.Version},
+		{"Image Version (Default: latest)", &data.ImageVersion},
+		{"DB Name (Default: DB)", &data.DbName},
+		{"DB User (Default: USER)", &data.DbUser},
+		{"DB Password (Default: PASS)", &data.DbPass},
+		{"Ports (Default: 5432:5432)", &data.Ports},
+		{"CPU (Default: 1)", &data.Cpu},
+		{"Memory (MB) (Default: 500)", &data.Memory},
+		{"Network Name (Default: network)", &data.NetworkName},
 	}
 
 	for _, p := range prompts {
@@ -89,7 +88,6 @@ func setComposeSettings() *ComposeData {
 	if len(data.NetworkName) == 0 {
 		data.NetworkName = "network"
 	}
-	fmt.Println(text.FgBlue.Sprint("If some field is empty, default configs will be applied."))
 
 	return data
 }

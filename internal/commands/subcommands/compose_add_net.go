@@ -93,7 +93,12 @@ func CreateComposeAddNetCommand() *cobra.Command {
 				return
 			}
 
-			os.WriteFile(dockerComposePath, newComposeYmlAsBytes, dockerComposeFileInfo.Mode())
+			if err := os.WriteFile(dockerComposePath, newComposeYmlAsBytes, dockerComposeFileInfo.Mode()); err != nil {
+				fmt.Println(text.FgRed.Sprint(err))
+				return
+
+			}
+
 			fmt.Println(text.FgGreen.Sprint("Network added to docker-compose.yml succesfully!"))
 		},
 	}

@@ -109,7 +109,11 @@ func CreateComposeAddCommand() *cobra.Command {
 				return
 			}
 
-			os.WriteFile(dockerComposePath, newComposeYmlAsBytes, dockerComposeFileInfo.Mode())
+			if err := os.WriteFile(dockerComposePath, newComposeYmlAsBytes, dockerComposeFileInfo.Mode()); err != nil {
+				fmt.Println(text.FgRed.Sprint(err))
+				return
+			}
+
 			fmt.Println(text.FgGreen.Sprint("service added to docker-compose.yml succesfully!"))
 		},
 	}
@@ -117,7 +121,10 @@ func CreateComposeAddCommand() *cobra.Command {
 	composeAddCmd.Flags().StringVarP(&serviceImageFlag, "image", "i", "", "sets the service image in docker-compose")
 	composeAddCmd.Flags().StringSliceVarP(&servicePortsFlag, "ports", "p", []string{}, "sets the service port in service in docker-compose")
 	composeAddCmd.Flags().StringToStringP("envs", "e", map[string]string{}, "sets an service environment variable in docker-compose")
-	viper.BindPFlag("envs", composeAddCmd.Flags().Lookup("envs"))
+	if err := viper.BindPFlag("envs", composeAddCmd.Flags().Lookup("envs")); err != nil {
+		fmt.Println(text.FgRed.Sprint(err))
+		os.Exit(1)
+	}
 	composeAddCmd.Flags().StringSliceVarP(&serviceNetworksFlags, "networks", "n", []string{}, "sets the service network in docker-compose")
 	composeAddCmd.Flags().StringVarP(&serviceHostnameFlag, "hostname", "o", "", "sets the service hostname in docker-compose")
 
@@ -128,7 +135,7 @@ func composeAdd(compose *DockerCompose, serviceName string, service Service) (*D
 	newCompose := compose
 
 	if newCompose.Services == nil {
-		newCompose.Services = make(map[string]*Service)
+		newCompose.Services = make(map[string]Service)
 	}
 
 	newservice := setServiceSettings(&service)
@@ -138,7 +145,7 @@ func composeAdd(compose *DockerCompose, serviceName string, service Service) (*D
 			return nil, fmt.Errorf("%s is conflicting with a service with same name", serviceName)
 		}
 	}
-	newCompose.Services[serviceName] = newservice
+	newCompose.Services[serviceName] = *newservice
 
 	return newCompose, nil
 }
