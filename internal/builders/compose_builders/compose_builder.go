@@ -9,6 +9,7 @@ type ComposeData struct {
 	ImageVersion string
 	DbName       string
 	DbUser       string
+	DbRootPass   string
 	DbPass       string
 	Ports        string
 	Cpu          string
