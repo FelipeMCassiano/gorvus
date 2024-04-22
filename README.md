@@ -46,7 +46,7 @@ gorvus compose
 ```
 
 > [!NOTE]
-> Currently, only Postgres have support for docker-compose with template generation.
+> Currently, only Postgres and Mysql have support for docker-compose with template generation.
 
 ### Add Services into docker-compose.yml
 * You can use Gorvus interactively without flags, or specify service details:
