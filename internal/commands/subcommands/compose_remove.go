@@ -14,8 +14,9 @@ func CreateComposeRemoveCommand() *cobra.Command {
 	var networkFlag string
 	var serviceFlag string
 	composeDeleteCmd := &cobra.Command{
-		Use:   "rm",
-		Short: "Remove services or networks in docker-compose.yml",
+		Use:     "remove",
+		Short:   "Remove services or networks in docker-compose.yml",
+		Aliases: []string{"rm"},
 		Run: func(cmd *cobra.Command, args []string) {
 			workingDir, getWdError := os.Getwd()
 			if getWdError != nil {
