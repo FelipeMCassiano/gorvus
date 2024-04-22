@@ -1,4 +1,4 @@
-package commands
+package subcommands
 
 import (
 	"errors"
@@ -125,11 +125,10 @@ func CreateComposeAddCommand() *cobra.Command {
 }
 
 func composeAdd(compose *DockerCompose, serviceName string, service Service) (*DockerCompose, error) {
-	// todo check for version?
 	newCompose := compose
 
-	if compose.Services == nil {
-		compose.Services = make(map[string]Service)
+	if newCompose.Services == nil {
+		newCompose.Services = make(map[string]*Service)
 	}
 
 	newservice := setServiceSettings(&service)
@@ -139,8 +138,7 @@ func composeAdd(compose *DockerCompose, serviceName string, service Service) (*D
 			return nil, fmt.Errorf("%s is conflicting with a service with same name", serviceName)
 		}
 	}
-	// todo maybe prevent this side effect by returning new yml?
-	newCompose.Services[serviceName] = *newservice
+	newCompose.Services[serviceName] = newservice
 
 	return newCompose, nil
 }
