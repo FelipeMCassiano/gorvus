@@ -1,4 +1,4 @@
-package builders
+package dockerfilebuilders
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
@@ -51,7 +52,7 @@ func BuildBunDockerfile(input DockerfileData) error {
 
 	defer file.Close()
 
-	applyTemplate(file, string(datafile), input)
+	builders.ApplyTemplate(file, string(datafile), input)
 
 	return nil
 }
