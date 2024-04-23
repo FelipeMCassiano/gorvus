@@ -1,4 +1,4 @@
-package builders
+package dockerfilebuilders
 
 import (
 	_ "embed"
@@ -9,13 +9,18 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
 func BuildTypescriptNodeDockefile(input DockerfileData) error {
 	if len(input.EntryFile) == 0 {
-		fmt.Println(text.FgYellow.Sprint("> You must specify the entry file, use `--entry-file` or `-e`"))
-		os.Exit(1)
+		eF, err := setEntryfile()
+		if err != nil {
+			os.Exit(1)
+		}
+		input.EntryFile = eF
+
 	}
 
 	if strings.Contains(input.EntryFile, ".js") {
@@ -60,7 +65,7 @@ func BuildTypescriptNodeDockefile(input DockerfileData) error {
 
 	defer file.Close()
 
-	applyTemplate(file, string(datafile), input)
+	builders.ApplyTemplate(file, string(datafile), input)
 
 	return nil
 }

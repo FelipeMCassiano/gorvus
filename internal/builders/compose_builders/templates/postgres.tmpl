@@ -1,0 +1,20 @@
+version: "{{.Version}}"
+    
+services:
+  postgres:
+    image: postgres:{{.ImageVersion}}
+    hostname: postgres
+    environment:
+       POSTGRES_DB: {{.DbName}}
+       POSTGRES_USER: {{.DbUser}}
+       POSTGRES_PASSWORD: {{.DbPass}}
+    restart: "{{.Restart}}"
+    ports:
+        - "{{.Ports}}"
+    deploy:
+        resources:
+            limits:
+                cpus: "{{.Cpu}}"
+                memory: "{{.Memory}}MB"
+    networks:
+      - {{.NetworkName}}

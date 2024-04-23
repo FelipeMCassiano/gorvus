@@ -1,4 +1,4 @@
-package builders
+package dockerfilebuilders
 
 import (
 	"fmt"
@@ -8,15 +8,17 @@ import (
 
 	_ "embed"
 
+	"github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
 func BuildGoDockerfile(input DockerfileData) error {
 	if len(input.ProjectName) == 0 {
-		fmt.Println(
-			text.FgYellow.Sprintf("> You must specify the project name, use `--project-name` or -p"),
-		)
-		os.Exit(1)
+		pN, err := setProjectName()
+		if err != nil {
+			os.Exit(1)
+		}
+		input.ProjectName = pN
 	}
 
 	if len(input.EntryFile) >= 1 {
@@ -51,7 +53,7 @@ func BuildGoDockerfile(input DockerfileData) error {
 	}
 	defer file.Close()
 
-	applyTemplate(file, string(datafile), input)
+	builders.ApplyTemplate(file, string(datafile), input)
 
 	return nil
 }

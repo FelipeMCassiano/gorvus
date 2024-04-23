@@ -5,9 +5,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/FelipeMCassiano/gorvus/internal/builders"
+	dockerfilebuilders "github.com/FelipeMCassiano/gorvus/internal/builders/dockerfile_builders"
 	"github.com/FelipeMCassiano/gorvus/internal/utils"
 	"github.com/jedib0t/go-pretty/v6/text"
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
@@ -28,16 +29,19 @@ func generateDockerfile() *cobra.Command {
 			}
 
 			if len(language) == 0 {
-				fmt.Println(text.FgYellow.Sprint("> You must specify the language, use --language or -l"))
-				os.Exit(1)
+				prompt := promptui.Select{
+					Label: "Select language",
+					Items: utils.GetSupportedLangs(),
+				}
+				_, language, _ = prompt.Run()
 			}
 
-			input := builders.DockerfileData{
+			input := dockerfilebuilders.DockerfileData{
 				ProjectName: projectName,
 				EntryFile:   entryFile,
 			}
 
-			builder := utils.VerifyIfLangIsSupported(strings.ToLower(language))
+			builder := utils.GetDockerfileBuilder(strings.ToLower(language))
 
 			if err := builder(input); err != nil {
 				fmt.Println(text.FgRed.Sprintf("error: %s", err.Error()))
