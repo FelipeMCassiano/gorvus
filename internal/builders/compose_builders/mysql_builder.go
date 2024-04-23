@@ -9,7 +9,7 @@ import (
 )
 
 func MysqlBuilderComposefile() error {
-	compose := setMyqslSettings()
+	compose := setMysqlSettings()
 	path := fmt.Sprintf("templates/%s.tmpl", "mysql")
 
 	datafile, err := templatesContent.ReadFile(path)
@@ -28,7 +28,7 @@ func MysqlBuilderComposefile() error {
 	return nil
 }
 
-func setMyqslSettings() *ComposeData {
+func setMysqlSettings() *ComposeData {
 	data := new(ComposeData)
 
 	prompts := []struct {
