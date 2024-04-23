@@ -9,7 +9,7 @@ services:
        MYSQL_USER: {{.DbUser}}
        MYSQL_ROOT_PASSWORD: {{.DbRootPass}}
        MYSQL_PASSWORD: {{.DbPass}}
-
+    restart: "{{.Restart}}"
     ports:
         - "{{.Ports}}"
     deploy:
@@ -19,4 +19,3 @@ services:
                 memory: "{{.Memory}}MB"
     networks:
       - {{.NetworkName}}
-    
