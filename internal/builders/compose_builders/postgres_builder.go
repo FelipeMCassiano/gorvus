@@ -41,6 +41,7 @@ func setPostgresSettings() *ComposeData {
 		{"DB Name (Default: DB)", &data.DbName},
 		{"DB User (Default: USER)", &data.DbUser},
 		{"DB Password (Default: PASS)", &data.DbPass},
+		{"Restart (Default: no)", &data.Restart},
 		{"Ports (Default: 5432:5432)", &data.Ports},
 		{"CPU (Default: 1)", &data.Cpu},
 		{"Memory (MB) (Default: 500)", &data.Memory},
@@ -75,6 +76,9 @@ func setPostgresSettings() *ComposeData {
 	}
 	if len(data.DbPass) == 0 {
 		data.DbPass = "PASS"
+	}
+	if len(data.Restart) == 0 {
+		data.Restart = "no"
 	}
 	if len(data.Ports) == 0 {
 		data.Ports = "5432:5432"

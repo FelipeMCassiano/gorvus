@@ -11,6 +11,7 @@ type ComposeData struct {
 	DbUser       string
 	DbRootPass   string
 	DbPass       string
+	Restart      string
 	Ports        string
 	Cpu          string
 	Memory       string

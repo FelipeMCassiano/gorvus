@@ -41,6 +41,7 @@ func setMyqslSettings() *ComposeData {
 		{"DB User (Default: USER)", &data.DbUser},
 		{"DB Root Password (Default: ROOT)", &data.DbRootPass},
 		{"DB Password (Default: PASS)", &data.DbPass},
+		{"Restart (Default: no)", &data.Restart},
 		{"Ports (Default: 3306:3306)", &data.Ports},
 		{"CPU (Default: 1)", &data.Cpu},
 		{"Memory (MB) (Default: 500)", &data.Memory},
@@ -75,6 +76,9 @@ func setMyqslSettings() *ComposeData {
 	}
 	if len(data.DbPass) == 0 {
 		data.DbPass = "PASS"
+	}
+	if len(data.Restart) == 0 {
+		data.Restart = "no"
 	}
 	if len(data.Ports) == 0 {
 		data.Ports = "3306:3306"
