@@ -50,7 +50,7 @@ func TypescriptDockerFileBuilder(input DockerfileData) error {
 
 	nodeVersion := matches[1]
 
-	datafile, err := templatesContent.ReadFile("templates/typescript_node_dockerfile.tmpl")
+	datafile, err := os.ReadFile("templates/dockerfile/typescript_node_dockerfile.tmpl")
 	if err != nil {
 		return err
 	}

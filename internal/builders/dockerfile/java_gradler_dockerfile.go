@@ -39,7 +39,7 @@ func JavaGradleDockerFileBuilder(input DockerfileData) error {
 	}
 	input.Version = matches[1]
 
-	datafile, err := templatesContent.ReadFile("templates/java_gradle_dockerfile.tmpl")
+	datafile, err := os.ReadFile("templates/dockerfile/java_gradle_dockerfile.tmpl")
 	if err != nil {
 		return err
 	}

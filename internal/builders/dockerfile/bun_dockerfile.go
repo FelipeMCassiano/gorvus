@@ -36,7 +36,7 @@ func BunDockerFileBuilder(input DockerfileData) error {
 		return err
 	}
 
-	datafile, err := templatesContent.ReadFile("templates/tsx_bun_dockerfile.tmpl")
+	datafile, err := os.ReadFile("templates/dockerfile/tsx_bun_dockerfile.tmpl")
 	if err != nil {
 		return err
 	}

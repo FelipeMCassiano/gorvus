@@ -46,7 +46,7 @@ func JavascriptDockerFileBuilder(input DockerfileData) error {
 
 	nodeVersion := matches[1]
 
-	datafile, err := templatesContent.ReadFile("templates/javascript_node_dockerfile.tmpl")
+	datafile, err := os.ReadFile("templates/dockerfile/javascript_node_dockerfile.tmpl")
 	if err != nil {
 		return err
 	}

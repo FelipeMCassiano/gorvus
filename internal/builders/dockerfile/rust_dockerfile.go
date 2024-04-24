@@ -39,7 +39,7 @@ func RustDockerFileBuilder(input DockerfileData) error {
 	}
 	rustVersion := matches[1]
 
-	datafile, err := templatesContent.ReadFile("templates/rust_dockerfile.tmpl")
+	datafile, err := os.ReadFile("templates/dockerfile/rust_dockerfile.tmpl")
 	if err != nil {
 		fmt.Println("Error parsing Dockerfile template:", err)
 		return err

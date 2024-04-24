@@ -11,9 +11,9 @@ import (
 func PostgreSQLComposeFileBuilder() error {
 	compose := setPostgresSettings()
 
-	path := fmt.Sprintf("templates/%s.tmpl", "postgres")
+	path := fmt.Sprintf("templates/compose/%s.tmpl", "postgres")
 
-	datafile, err := templatesContent.ReadFile(path)
+	datafile, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}

@@ -1,9 +1,5 @@
 package compose
 
-import (
-	"embed"
-)
-
 type ComposeData struct {
 	Version      string
 	ImageVersion string
@@ -17,6 +13,3 @@ type ComposeData struct {
 	Memory       string
 	NetworkName  string
 }
-
-//go:embed templates/*
-var templatesContent embed.FS
