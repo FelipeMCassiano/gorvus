@@ -1,4 +1,4 @@
-package dockerfilebuilders
+package dockerfile
 
 import (
 	"fmt"
@@ -6,53 +6,48 @@ import (
 	"os/exec"
 	"regexp"
 
-	_ "embed"
-
 	"github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func BuildGoDockerfile(input DockerfileData) error {
+func BuilderJavaGradleDockerfile(input DockerfileData) error {
 	if len(input.ProjectName) == 0 {
 		pN, err := setProjectName()
 		if err != nil {
 			os.Exit(1)
 		}
+
 		input.ProjectName = pN
 	}
-
 	if len(input.EntryFile) >= 1 {
 		fmt.Println(text.FgYellow.Sprintf("> This language doens't needs to specify the Entry File"))
 		os.Exit(1)
 	}
-
-	cmd := exec.Command("go", "version")
-	goVersionOutput, err := cmd.Output()
+	cmd := exec.Command("java", "-version")
+	javaVersionOutput, err := cmd.CombinedOutput()
 	if err != nil {
 		return err
 	}
 
-	versionPattern := `go version go(\d+\.\d+\.\d+)`
-	versionRegex := regexp.MustCompile(versionPattern)
+	versionPattern := `"(\d+)\.`
+	re := regexp.MustCompile(versionPattern)
 
-	matches := versionRegex.FindStringSubmatch(string(goVersionOutput))
+	matches := re.FindStringSubmatch(string(javaVersionOutput))
+
 	if len(matches) < 2 {
-		return fmt.Errorf("failed to extract Go version number")
+		return fmt.Errorf("failed to extract Java version number")
 	}
-	goVersion := matches[1]
-	datafile, err := templatesContent.ReadFile("templates/go_dockerfile.tmpl")
+	input.Version = matches[1]
+
+	datafile, err := templatesContent.ReadFile("templates/java_gradle_dockerfile.tmpl")
 	if err != nil {
 		return err
 	}
-
-	input.Version = goVersion
-
 	file, err := os.Create("Dockerfile")
 	if err != nil {
-		return fmt.Errorf("Error creating Dockerfile: %s", err.Error())
+		return err
 	}
 	defer file.Close()
-
 	builders.ApplyTemplate(file, string(datafile), input)
 
 	return nil

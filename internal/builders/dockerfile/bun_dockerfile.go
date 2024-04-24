@@ -1,4 +1,4 @@
-package dockerfilebuilders
+package dockerfile
 
 import (
 	"fmt"

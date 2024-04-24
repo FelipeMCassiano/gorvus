@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	dockerfilebuilders "github.com/FelipeMCassiano/gorvus/internal/builders/dockerfile_builders"
+	"github.com/FelipeMCassiano/gorvus/internal/builders/dockerfile"
 	"github.com/FelipeMCassiano/gorvus/internal/utils"
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/manifoldco/promptui"
@@ -36,7 +36,7 @@ func generateDockerfile() *cobra.Command {
 				_, language, _ = prompt.Run()
 			}
 
-			input := dockerfilebuilders.DockerfileData{
+			input := dockerfile.DockerfileData{
 				ProjectName: projectName,
 				EntryFile:   entryFile,
 			}
