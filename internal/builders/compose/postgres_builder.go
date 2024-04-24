@@ -1,4 +1,4 @@
-package composebuilders
+package compose
 
 import (
 	"fmt"
@@ -8,9 +8,10 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-func MongoDbMBuilderComposefile() error {
-	compose := setMongoDbSettings()
-	path := fmt.Sprintf("templates/%s.tmpl", "mongodb")
+func PostgresBuilderComposefile() error {
+	compose := setPostgresSettings()
+
+	path := fmt.Sprintf("templates/%s.tmpl", "postgres")
 
 	datafile, err := templatesContent.ReadFile(path)
 	if err != nil {
@@ -28,7 +29,7 @@ func MongoDbMBuilderComposefile() error {
 	return nil
 }
 
-func setMongoDbSettings() *ComposeData {
+func setPostgresSettings() *ComposeData {
 	data := new(ComposeData)
 
 	prompts := []struct {
@@ -37,9 +38,11 @@ func setMongoDbSettings() *ComposeData {
 	}{
 		{"docker-compose Version (Default: 3.9)", &data.Version},
 		{"Image Version (Default: latest)", &data.ImageVersion},
-		{"MONGO_INITDB_ROOT_USERNAME (Default: USER)", &data.DbUser},
-		{"MONGO_INITDB_ROOT_PASSWORD (Default: PASS)", &data.DbPass},
-		{"Ports (Default: 27017:27017)", &data.Ports},
+		{"DB Name (Default: DB)", &data.DbName},
+		{"DB User (Default: USER)", &data.DbUser},
+		{"DB Password (Default: PASS)", &data.DbPass},
+		{"Restart (Default: no)", &data.Restart},
+		{"Ports (Default: 5432:5432)", &data.Ports},
 		{"CPU (Default: 1)", &data.Cpu},
 		{"Memory (MB) (Default: 500)", &data.Memory},
 		{"Network Name (Default: network)", &data.NetworkName},
@@ -58,11 +61,15 @@ func setMongoDbSettings() *ComposeData {
 
 		*p.Pointer = result
 	}
+
 	if len(data.Version) == 0 {
 		data.Version = "3.9"
 	}
 	if len(data.ImageVersion) == 0 {
 		data.ImageVersion = "latest"
+	}
+	if len(data.DbName) == 0 {
+		data.DbName = "DB"
 	}
 	if len(data.DbUser) == 0 {
 		data.DbUser = "USER"
@@ -70,8 +77,11 @@ func setMongoDbSettings() *ComposeData {
 	if len(data.DbPass) == 0 {
 		data.DbPass = "PASS"
 	}
+	if len(data.Restart) == 0 {
+		data.Restart = "no"
+	}
 	if len(data.Ports) == 0 {
-		data.Ports = "27017:27017"
+		data.Ports = "5432:5432"
 	}
 	if len(data.Cpu) == 0 {
 		data.Cpu = "1"

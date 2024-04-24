@@ -1,4 +1,4 @@
-package composebuilders
+package compose
 
 import (
 	"fmt"
@@ -8,10 +8,9 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-func PostgresBuilderComposefile() error {
-	compose := setPostgresSettings()
-
-	path := fmt.Sprintf("templates/%s.tmpl", "postgres")
+func MysqlBuilderComposefile() error {
+	compose := setMysqlSettings()
+	path := fmt.Sprintf("templates/%s.tmpl", "mysql")
 
 	datafile, err := templatesContent.ReadFile(path)
 	if err != nil {
@@ -29,7 +28,7 @@ func PostgresBuilderComposefile() error {
 	return nil
 }
 
-func setPostgresSettings() *ComposeData {
+func setMysqlSettings() *ComposeData {
 	data := new(ComposeData)
 
 	prompts := []struct {
@@ -40,9 +39,10 @@ func setPostgresSettings() *ComposeData {
 		{"Image Version (Default: latest)", &data.ImageVersion},
 		{"DB Name (Default: DB)", &data.DbName},
 		{"DB User (Default: USER)", &data.DbUser},
+		{"DB Root Password (Default: ROOT)", &data.DbRootPass},
 		{"DB Password (Default: PASS)", &data.DbPass},
 		{"Restart (Default: no)", &data.Restart},
-		{"Ports (Default: 5432:5432)", &data.Ports},
+		{"Ports (Default: 3306:3306)", &data.Ports},
 		{"CPU (Default: 1)", &data.Cpu},
 		{"Memory (MB) (Default: 500)", &data.Memory},
 		{"Network Name (Default: network)", &data.NetworkName},
@@ -81,7 +81,7 @@ func setPostgresSettings() *ComposeData {
 		data.Restart = "no"
 	}
 	if len(data.Ports) == 0 {
-		data.Ports = "5432:5432"
+		data.Ports = "3306:3306"
 	}
 	if len(data.Cpu) == 0 {
 		data.Cpu = "1"
@@ -91,6 +91,9 @@ func setPostgresSettings() *ComposeData {
 	}
 	if len(data.NetworkName) == 0 {
 		data.NetworkName = "network"
+	}
+	if len(data.DbRootPass) == 0 {
+		data.DbRootPass = "ROOT"
 	}
 
 	return data

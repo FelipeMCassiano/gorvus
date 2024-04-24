@@ -1,4 +1,4 @@
-package composebuilders
+package compose
 
 import (
 	"embed"
