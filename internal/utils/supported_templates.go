@@ -17,6 +17,6 @@ var supportedLangs = map[string]func(dockerfilebuilders.DockerfileData) error{
 
 var supportedComposeTemplates = map[string]func() error{
 	"postgres": composebuilders.PostgresBuilderComposefile,
-	"myqsl":    composebuilders.MysqlBuilderComposefile,
+	"mysql":    composebuilders.MysqlBuilderComposefile,
 	"mongodb":  composebuilders.MongoDbMBuilderComposefile,
 }
