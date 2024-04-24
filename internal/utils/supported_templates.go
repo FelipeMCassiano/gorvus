@@ -6,17 +6,17 @@ import (
 )
 
 var supportedLangs = map[string]func(dockerfile.DockerfileData) error{
-	"go":            dockerfile.BuildGoDockerfile,
-	"rust":          dockerfile.BuildRustDockerfile,
-	"node-ts":       dockerfile.BuildTypescriptNodeDockefile,
-	"node-js":       dockerfile.BuildJavascriptDockerfile,
-	"bun":           dockerfile.BuildBunDockerfile,
-	"csharp-dotnet": dockerfile.BuildDotNetDockerfile,
-	"java-gradle":   dockerfile.BuilderJavaGradleDockerfile,
+	"go":            dockerfile.GoDockerFileBuilder,
+	"rust":          dockerfile.RustDockerFileBuilder,
+	"node-ts":       dockerfile.TypescriptDockerFileBuilder,
+	"node-js":       dockerfile.JavascriptDockerFileBuilder,
+	"bun":           dockerfile.BunDockerFileBuilder,
+	"csharp-dotnet": dockerfile.DotNetDockerFileBuilder,
+	"java-gradle":   dockerfile.JavaGradleDockerFileBuilder,
 }
 
 var supportedComposeTemplates = map[string]func() error{
-	"postgres": compose.PostgresBuilderComposefile,
-	"mysql":    compose.MysqlBuilderComposefile,
-	"mongodb":  compose.MongoDbMBuilderComposefile,
+	"postgres": compose.PostgreSQLComposeFileBuilder,
+	"mysql":    compose.MySQLComposeFileBuilder,
+	"mongodb":  compose.MongoDBComposeFileBuilder,
 }

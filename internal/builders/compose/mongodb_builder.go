@@ -8,7 +8,7 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-func MongoDbMBuilderComposefile() error {
+func MongoDBComposeFileBuilder() error {
 	compose := setMongoDbSettings()
 	path := fmt.Sprintf("templates/%s.tmpl", "mongodb")
 

@@ -11,7 +11,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func BuildGoDockerfile(input DockerfileData) error {
+func GoDockerFileBuilder(input DockerfileData) error {
 	if len(input.ProjectName) == 0 {
 		pN, err := setProjectName()
 		if err != nil {

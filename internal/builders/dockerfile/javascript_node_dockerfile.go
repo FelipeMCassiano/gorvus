@@ -11,7 +11,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func BuildJavascriptDockerfile(input DockerfileData) error {
+func JavascriptDockerFileBuilder(input DockerfileData) error {
 	if len(input.EntryFile) == 0 {
 		eF, err := setEntryfile()
 		if err != nil {

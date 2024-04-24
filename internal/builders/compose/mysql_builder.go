@@ -8,7 +8,7 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-func MysqlBuilderComposefile() error {
+func MySQLComposeFileBuilder() error {
 	compose := setMysqlSettings()
 	path := fmt.Sprintf("templates/%s.tmpl", "mysql")
 

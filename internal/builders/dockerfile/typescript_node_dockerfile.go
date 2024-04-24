@@ -13,7 +13,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func BuildTypescriptNodeDockefile(input DockerfileData) error {
+func TypescriptDockerFileBuilder(input DockerfileData) error {
 	if len(input.EntryFile) == 0 {
 		eF, err := setEntryfile()
 		if err != nil {
