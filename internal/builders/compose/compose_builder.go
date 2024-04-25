@@ -1,5 +1,10 @@
 package compose
 
+import "embed"
+
+//go:embed templates/*
+var templatesContent embed.FS
+
 type ComposeData struct {
 	Version      string
 	ImageVersion string

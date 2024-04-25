@@ -39,7 +39,7 @@ func DotNetDockerFileBuilder(input DockerfileData) error {
 	}
 	input.Version = matches[1]
 
-	datafile, err := os.ReadFile("templates/dockerfile/dotnet_dockerfile.tmpl")
+	datafile, err := templatesContent.ReadFile("templates/dotnet_dockerfile.tmpl")
 	if err != nil {
 		return err
 	}

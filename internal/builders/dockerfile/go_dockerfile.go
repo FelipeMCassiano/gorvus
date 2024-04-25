@@ -39,7 +39,7 @@ func GoDockerFileBuilder(input DockerfileData) error {
 		return fmt.Errorf("failed to extract Go version number")
 	}
 	goVersion := matches[1]
-	datafile, err := os.ReadFile("templates/dockerfile/go_dockerfile.tmpl")
+	datafile, err := templatesContent.ReadFile("templates/go_dockerfile.tmpl")
 	if err != nil {
 		return err
 	}

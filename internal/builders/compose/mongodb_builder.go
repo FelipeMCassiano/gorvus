@@ -10,9 +10,9 @@ import (
 
 func MongoDBComposeFileBuilder() error {
 	compose := setMongoDbSettings()
-	path := fmt.Sprintf("templates/compose/%s.tmpl", "mongodb")
+	path := fmt.Sprintf("templates/%s.tmpl", "mongodb")
 
-	datafile, err := os.ReadFile(path)
+	datafile, err := templatesContent.ReadFile(path)
 	if err != nil {
 		return err
 	}
