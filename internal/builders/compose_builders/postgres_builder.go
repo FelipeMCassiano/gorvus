@@ -1,4 +1,4 @@
-package compose
+package composebuilders
 
 import (
 	"fmt"
@@ -8,12 +8,12 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-func PostgreSQLComposeFileBuilder() error {
+func PostgresBuilderComposefile() error {
 	compose := setPostgresSettings()
 
-	path := fmt.Sprintf("templates/compose/%s.tmpl", "postgres")
+	path := fmt.Sprintf("templates/%s.tmpl", "postgres")
 
-	datafile, err := os.ReadFile(path)
+	datafile, err := templatesContent.ReadFile(path)
 	if err != nil {
 		return err
 	}

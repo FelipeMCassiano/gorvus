@@ -1,4 +1,4 @@
-package compose
+package composebuilders
 
 import (
 	"fmt"
@@ -8,11 +8,11 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-func MongoDBComposeFileBuilder() error {
+func MongoDbMBuilderComposefile() error {
 	compose := setMongoDbSettings()
-	path := fmt.Sprintf("templates/compose/%s.tmpl", "mongodb")
+	path := fmt.Sprintf("templates/%s.tmpl", "mongodb")
 
-	datafile, err := os.ReadFile(path)
+	datafile, err := templatesContent.ReadFile(path)
 	if err != nil {
 		return err
 	}

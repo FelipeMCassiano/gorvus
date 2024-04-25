@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/FelipeMCassiano/gorvus/internal/builders/dockerfile"
+	dockerfilebuilders "github.com/FelipeMCassiano/gorvus/internal/builders/dockerfile_builders"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func GetDockerfileBuilder(language string) func(dockerfile.DockerfileData) error {
+func GetDockerfileBuilder(language string) func(dockerfilebuilders.DockerfileData) error {
 	builder, ok := supportedLangs[language]
 
 	if !ok {

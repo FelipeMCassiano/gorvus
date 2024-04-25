@@ -1,4 +1,4 @@
-package dockerfile
+package dockerfilebuilders
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func JavaGradleDockerFileBuilder(input DockerfileData) error {
+func BuilderJavaGradleDockerfile(input DockerfileData) error {
 	if len(input.ProjectName) == 0 {
 		pN, err := setProjectName()
 		if err != nil {
@@ -39,7 +39,7 @@ func JavaGradleDockerFileBuilder(input DockerfileData) error {
 	}
 	input.Version = matches[1]
 
-	datafile, err := os.ReadFile("templates/dockerfile/java_gradle_dockerfile.tmpl")
+	datafile, err := templatesContent.ReadFile("templates/java_gradle_dockerfile.tmpl")
 	if err != nil {
 		return err
 	}
