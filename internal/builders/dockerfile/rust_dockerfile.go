@@ -1,4 +1,4 @@
-package dockerfilebuilders
+package dockerfile
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func BuildRustDockerfile(input DockerfileData) error {
+func RustDockerFileBuilder(input DockerfileData) error {
 	if len(input.ProjectName) == 0 {
 		pN, err := setProjectName()
 		if err != nil {
@@ -39,7 +39,7 @@ func BuildRustDockerfile(input DockerfileData) error {
 	}
 	rustVersion := matches[1]
 
-	datafile, err := templatesContent.ReadFile("templates/rust_dockerfile.tmpl")
+	datafile, err := os.ReadFile("templates/dockerfile/rust_dockerfile.tmpl")
 	if err != nil {
 		fmt.Println("Error parsing Dockerfile template:", err)
 		return err

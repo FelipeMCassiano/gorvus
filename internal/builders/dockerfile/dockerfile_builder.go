@@ -1,14 +1,10 @@
-package dockerfilebuilders
+package dockerfile
 
 import (
-	"embed"
 	"errors"
 
 	"github.com/manifoldco/promptui"
 )
-
-//go:embed templates/*
-var templatesContent embed.FS
 
 type DockerfileData struct {
 	EntryFile   string

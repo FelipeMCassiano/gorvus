@@ -1,4 +1,4 @@
-package composebuilders
+package compose
 
 import (
 	"fmt"
@@ -8,11 +8,11 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-func MysqlBuilderComposefile() error {
+func MySQLComposeFileBuilder() error {
 	compose := setMysqlSettings()
-	path := fmt.Sprintf("templates/%s.tmpl", "mysql")
+	path := fmt.Sprintf("templates/compose/%s.tmpl", "mysql")
 
-	datafile, err := templatesContent.ReadFile(path)
+	datafile, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}

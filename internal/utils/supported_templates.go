@@ -1,22 +1,22 @@
 package utils
 
 import (
-	composebuilders "github.com/FelipeMCassiano/gorvus/internal/builders/compose_builders"
-	dockerfilebuilders "github.com/FelipeMCassiano/gorvus/internal/builders/dockerfile_builders"
+	"github.com/FelipeMCassiano/gorvus/internal/builders/compose"
+	"github.com/FelipeMCassiano/gorvus/internal/builders/dockerfile"
 )
 
-var supportedLangs = map[string]func(dockerfilebuilders.DockerfileData) error{
-	"go":            dockerfilebuilders.BuildGoDockerfile,
-	"rust":          dockerfilebuilders.BuildRustDockerfile,
-	"node-ts":       dockerfilebuilders.BuildTypescriptNodeDockefile,
-	"node-js":       dockerfilebuilders.BuildJavascriptDockerfile,
-	"bun":           dockerfilebuilders.BuildBunDockerfile,
-	"csharp-dotnet": dockerfilebuilders.BuildDotNetDockerfile,
-	"java-gradle":   dockerfilebuilders.BuilderJavaGradleDockerfile,
+var supportedLangs = map[string]func(dockerfile.DockerfileData) error{
+	"go":            dockerfile.GoDockerFileBuilder,
+	"rust":          dockerfile.RustDockerFileBuilder,
+	"node-ts":       dockerfile.TypescriptDockerFileBuilder,
+	"node-js":       dockerfile.JavascriptDockerFileBuilder,
+	"bun":           dockerfile.BunDockerFileBuilder,
+	"csharp-dotnet": dockerfile.DotNetDockerFileBuilder,
+	"java-gradle":   dockerfile.JavaGradleDockerFileBuilder,
 }
 
 var supportedComposeTemplates = map[string]func() error{
-	"postgres": composebuilders.PostgresBuilderComposefile,
-	"mysql":    composebuilders.MysqlBuilderComposefile,
-	"mongodb":  composebuilders.MongoDbMBuilderComposefile,
+	"postgres": compose.PostgreSQLComposeFileBuilder,
+	"mysql":    compose.MySQLComposeFileBuilder,
+	"mongodb":  compose.MongoDBComposeFileBuilder,
 }
