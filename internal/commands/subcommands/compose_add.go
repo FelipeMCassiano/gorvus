@@ -140,10 +140,8 @@ func composeAdd(compose *DockerCompose, serviceName string, service Service) (*D
 
 	newservice := setServiceSettings(&service)
 
-	for inComposeServiceName := range newCompose.Services {
-		if inComposeServiceName == serviceName {
-			return nil, fmt.Errorf("%s is conflicting with a service with same name", serviceName)
-		}
+	if _, ok := newCompose.Services[serviceName]; ok {
+		return nil, fmt.Errorf("%s is conflicting with a service with same name", serviceName)
 	}
 	newCompose.Services[serviceName] = *newservice
 

@@ -116,10 +116,8 @@ func networkAdd(compose *DockerCompose, networkName string, network Network) (*D
 		newCompose.Networks = make(Networks)
 	}
 
-	for inComposeNetworkName := range newCompose.Networks {
-		if inComposeNetworkName == networkName {
-			return nil, fmt.Errorf("%s is conflicting with a service with same name", networkName)
-		}
+	if _, ok := newCompose.Networks[networkName]; ok {
+		return nil, fmt.Errorf("%s is conflicting with a service with same name", networkName)
 	}
 
 	newCompose.Networks[networkName] = network

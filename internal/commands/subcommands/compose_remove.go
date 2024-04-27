@@ -75,10 +75,8 @@ func remove(compose *DockerCompose, serviceName string, networkName string) (*Do
 		if len(newCompose.Services) == 0 {
 			return nil, fmt.Errorf("Cannot remove '%s'. Seems like you have no service defined yet. If would like to create one consider use 'gorvus compose add' command", serviceName)
 		}
-		for inComposeSerivceName := range newCompose.Services {
-			if inComposeSerivceName != serviceName {
-				return nil, fmt.Errorf("Cannot remove '%s'. This service doens't exists", serviceName)
-			}
+		if _, ok := newCompose.Services[serviceName]; !ok {
+			return nil, fmt.Errorf("Cannot remove '%s'. This service doens't exists", serviceName)
 		}
 		delete(compose.Services, serviceName)
 	}
@@ -87,10 +85,8 @@ func remove(compose *DockerCompose, serviceName string, networkName string) (*Do
 		if len(newCompose.Networks) == 0 {
 			return nil, fmt.Errorf("Cannot remove %s. Seems like you have no network defined yet. If would like to create one consider use 'gorvus compose add' command", networkName)
 		}
-		for inComposeNetworkName := range newCompose.Networks {
-			if inComposeNetworkName != networkName {
-				return nil, fmt.Errorf("Cannot remove '%s'. This network doens't exists", networkName)
-			}
+		if _, ok := newCompose.Networks[networkName]; !ok {
+			return nil, fmt.Errorf("Cannot remove '%s'. This network doens't exists", networkName)
 		}
 		delete(compose.Networks, networkName)
 	}
