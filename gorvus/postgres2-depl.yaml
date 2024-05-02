@@ -1,0 +1,22 @@
+apiVersion: v2
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: postgesss 
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: postgesss 
+  template:
+    metadata:
+      labels:
+        app: postgesss 
+    spec:
+      containers:
+      - name: postgesss 
+        image: postgres:15
+        ports:
+        - containerPort: 5432:5432 
+

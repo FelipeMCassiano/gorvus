@@ -1,0 +1,22 @@
+apiVersion: v6
+kind: Deployment
+metadata:
+  name: test6
+  labels:
+    app: test6 
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: test6 
+  template:
+    metadata:
+      labels:
+        app: test6 
+    spec:
+      containers:
+      - name: test6 
+        image: postgres
+        ports:
+        - containerPort: 5432 
+

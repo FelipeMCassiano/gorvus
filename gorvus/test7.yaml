@@ -1,0 +1,22 @@
+apiVersion: v7
+kind: Deployment
+metadata:
+  name: test7
+  labels:
+    app: test7 
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: test7 
+  template:
+    metadata:
+      labels:
+        app: test7 
+    spec:
+      containers:
+      - name: test7 
+        image: postgres:latest
+        ports:
+        - containerPort: 5432:5432 
+
