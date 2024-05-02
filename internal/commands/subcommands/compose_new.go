@@ -15,7 +15,7 @@ func CreateComposeCreateCommand() *cobra.Command {
 	var composeTemplate string
 
 	composeCreateCmd := &cobra.Command{
-		Use:   "create",
+		Use:   "new",
 		Short: "Create a new docker-compose.yml",
 		Run: func(cmd *cobra.Command, args []string) {
 			workingDir, getWdError := os.Getwd()
