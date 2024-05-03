@@ -20,6 +20,6 @@ func CreateKubeCommand() *cobra.Command {
 			}
 		},
 	}
-	kubecmd.AddCommand(subcommands.CreateKubeNewCommand())
+	kubecmd.AddCommand(subcommands.CreateKubeDeploymentCommand())
 	return kubecmd
 }
