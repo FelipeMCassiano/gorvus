@@ -78,6 +78,12 @@ gorvus compose rm -s<service name>
 ```bash
 gorvus compose rm -n<network name>
 ```
+### Generate Kubernetes yaml file
+
+#### Create a new deployment
+```bash
+gorvus kube deployment new
+```
 
 ## Contributing
 
