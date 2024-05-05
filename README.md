@@ -43,7 +43,7 @@ gorvus createDockerfile --language<language> --projectName<projectName>
 
 ### Generate docker-compose.yml
 ```bash
-gorvus compose 
+gorvus compose new
 ```
 
 > [!NOTE]
