@@ -10,6 +10,12 @@ import (
 )
 
 func DeploymentKubeBuilder() error {
+	defer func() {
+		if r := recover(); r != nil {
+			os.Exit(1)
+		}
+	}()
+
 	depl := setDeploySettings()
 	datafile, err := templatesContent.ReadFile("templates/kube_deployment.tmpl")
 	if err != nil {
@@ -57,6 +63,7 @@ func setDeploySettings() *KubeDatabuilder {
 			fmt.Printf("Prompt failed %v\n", err)
 			return nil
 		}
+		recover()
 
 		*p.Pointer = result
 

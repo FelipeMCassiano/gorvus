@@ -4,13 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"path"
 
+	"github.com/FelipeMCassiano/gorvus/internal/builders/compose"
+	"github.com/FelipeMCassiano/gorvus/internal/utils"
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"gopkg.in/yaml.v3"
 )
 
 func CreateComposeAddCommand() *cobra.Command {
@@ -41,7 +41,7 @@ func CreateComposeAddCommand() *cobra.Command {
 
 			}
 
-			service := Service{
+			service := compose.Service{
 				Image:       serviceImageFlag,
 				Hostname:    serviceHostnameFlag,
 				Environment: envs,
@@ -49,31 +49,9 @@ func CreateComposeAddCommand() *cobra.Command {
 				Ports:       servicePortsFlag,
 			}
 
-			workingDir, getWdError := os.Getwd()
-			if getWdError != nil {
-				fmt.Println(text.FgRed.Sprint("oops! could not get current working directory."))
-				os.Exit(1)
-			}
-
-			dockerComposePath := path.Join(workingDir, "docker-compose.yml")
-			dockerComposeFileInfo, statComposeError := os.Stat(dockerComposePath)
-			if statComposeError != nil {
-				fmt.Println(text.FgRed.Sprint("for some reason, it failed to read docker-compose.yml file."))
-				os.Exit(1)
-			}
-
-			// todo fallback to empty composeYml
-			dockerComposeFileContents, readComposeError := os.ReadFile(dockerComposePath)
-			if readComposeError != nil {
-				fmt.Println(text.FgRed.Sprint("for some reason, it failed to read docker-compose.yml file."))
-				os.Exit(1)
-			}
-
-			var composeYml DockerCompose
-
-			yamlParseError := yaml.Unmarshal(dockerComposeFileContents, &composeYml)
-			if yamlParseError != nil {
-				fmt.Println(text.FgRed.Sprint("can't manage docker-compose.yml, the contents of the file are invalid."))
+			composeYml, dockerComposeFileInfo, dockerComposePath, err := utils.GetDockerComposePath()
+			if err != nil {
+				fmt.Println(text.FgRed.Sprint(err))
 				os.Exit(1)
 			}
 
@@ -102,14 +80,7 @@ func CreateComposeAddCommand() *cobra.Command {
 				return
 
 			}
-
-			newComposeYmlAsBytes, marshalError := yaml.Marshal(newCompose)
-			if marshalError != nil {
-				fmt.Println(text.FgRed.Sprint("can't manage docker-compose.yml, the contents of the file are invalid."))
-				return
-			}
-
-			if err := os.WriteFile(dockerComposePath, newComposeYmlAsBytes, dockerComposeFileInfo.Mode()); err != nil {
+			if err := utils.WriteDockerCompose(newCompose, dockerComposePath, dockerComposeFileInfo); err != nil {
 				fmt.Println(text.FgRed.Sprint(err))
 				return
 			}
@@ -131,11 +102,16 @@ func CreateComposeAddCommand() *cobra.Command {
 	return composeAddCmd
 }
 
-func composeAdd(compose *DockerCompose, serviceName string, service Service) (*DockerCompose, error) {
-	newCompose := compose
+func composeAdd(composeYml *compose.DockerCompose, serviceName string, service compose.Service) (*compose.DockerCompose, error) {
+	defer func() {
+		if r := recover(); r != nil {
+			os.Exit(1)
+		}
+	}()
+	newCompose := composeYml
 
 	if newCompose.Services == nil {
-		newCompose.Services = make(map[string]Service)
+		newCompose.Services = make(map[string]compose.Service)
 	}
 
 	newservice := setServiceSettings(&service)
@@ -148,7 +124,7 @@ func composeAdd(compose *DockerCompose, serviceName string, service Service) (*D
 	return newCompose, nil
 }
 
-func setServiceSettings(service *Service) *Service {
+func setServiceSettings(service *compose.Service) *compose.Service {
 	data := service
 	if len(data.Image) == 0 {
 		imagePrompt := promptui.Prompt{
