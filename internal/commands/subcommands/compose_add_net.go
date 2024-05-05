@@ -2,13 +2,12 @@ package subcommands
 
 import (
 	"fmt"
-	"os"
-	"path"
 
+	"github.com/FelipeMCassiano/gorvus/internal/builders/compose"
+	"github.com/FelipeMCassiano/gorvus/internal/utils"
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
 )
 
 func CreateComposeAddNetCommand() *cobra.Command {
@@ -20,64 +19,74 @@ func CreateComposeAddNetCommand() *cobra.Command {
 		Use:   "add-net",
 		Short: "Adds a new network into docker-compose.yml",
 		Run: func(cmd *cobra.Command, args []string) {
-			if len(networkNameFlag) == 0 {
-				prompt := promptui.Prompt{
+			if len(networkNameFlag) == 0 && len(networkDriverFlag) == 0 && len(nameDockerNetworkFlag) == 0 {
+				promptName := promptui.Prompt{
 					Label:    "Network Name",
 					Validate: validatePrompt,
 				}
-				name, _ := prompt.Run()
-				networkNameFlag = name
-			}
-
-			network := Network{
-				Driver: networkDriverFlag,
-				Name:   nameDockerNetworkFlag,
-			}
-
-			if len(network.Driver) == 0 {
-				prompt := promptui.Prompt{
+				name, _ := promptName.Run()
+				promptDriver := promptui.Prompt{
 					Label:    "Network Driver",
 					Validate: validatePrompt,
 				}
-				driver, _ := prompt.Run()
-				network.Driver = driver
-			}
-
-			if len(network.Name) == 0 {
-				prompt := promptui.Prompt{
+				driver, _ := promptDriver.Run()
+				promptNameNetwork := promptui.Prompt{
 					Label:    "Network container name",
 					Validate: validatePrompt,
 				}
-				nameNetwork, _ := prompt.Run()
-				network.Name = nameNetwork
+				nameNetwork, _ := promptNameNetwork.Run()
 
+				network := compose.Network{
+					Driver: driver,
+					Name:   nameNetwork,
+				}
+				composeYml, dockerComposeFileInfo, dockerComposePath, err := utils.GetDockerComposePath()
+				if err != nil {
+					fmt.Println(text.FgRed.Sprint(err))
+					return
+				}
+
+				newCompose, err := networkAdd(&composeYml, name, network)
+				if err != nil {
+					fmt.Println(text.FgRed.Sprint(err))
+					return
+
+				}
+
+				if err := utils.WriteDockerCompose(newCompose, dockerComposePath, dockerComposeFileInfo); err != nil {
+					fmt.Println(text.FgRed.Sprint(err))
+					return
+				}
+
+				fmt.Println(text.FgGreen.Sprint("Network added to docker-compose.yml succesfully!"))
+
+				return
 			}
 
-			workingDir, getWdError := os.Getwd()
-			if getWdError != nil {
-				fmt.Println(text.FgRed.Sprint("oops! could not get current working directory."))
-				os.Exit(1)
+			network := compose.Network{
+				Driver: networkDriverFlag,
+				Name:   nameDockerNetworkFlag,
+			}
+			if len(networkNameFlag) == 0 {
+				fmt.Println(text.FgYellow.Sprint("You must define network name. Use '--name' or '-n"))
+				return
 			}
 
-			dockerComposePath := path.Join(workingDir, "docker-compose.yml")
-			dockerComposeFileInfo, statComposeError := os.Stat(dockerComposePath)
-			if statComposeError != nil {
-				fmt.Println(text.FgRed.Sprint("for some reason, it failed to read docker-compose.yml file."))
-				os.Exit(1)
+			if len(network.Driver) == 0 {
+				fmt.Println(text.FgYellow.Sprint("You must define network driver. Use '--driver' or '-d"))
+				return
 			}
 
-			dockerComposeFileContents, readComposeError := os.ReadFile(dockerComposePath)
-			if readComposeError != nil {
-				fmt.Println(text.FgRed.Sprint("for some reason, it failed to read docker-compose.yml file."))
-				os.Exit(1)
+			if len(network.Name) == 0 {
+				fmt.Println(text.FgYellow.Sprint("You must define network docker name. Use '--name-docker' or '-x"))
+
+				return
 			}
 
-			var composeYml DockerCompose
-
-			yamlParseError := yaml.Unmarshal(dockerComposeFileContents, &composeYml)
-			if yamlParseError != nil {
-				fmt.Println(text.FgRed.Sprint("can't manage docker-compose.yml, the contents of the file are invalid."))
-				os.Exit(1)
+			composeYml, dockerComposeFileInfo, dockerComposePath, err := utils.GetDockerComposePath()
+			if err != nil {
+				fmt.Println(text.FgRed.Sprint(err))
+				return
 			}
 
 			newCompose, err := networkAdd(&composeYml, networkNameFlag, network)
@@ -87,16 +96,9 @@ func CreateComposeAddNetCommand() *cobra.Command {
 
 			}
 
-			newComposeYmlAsBytes, marshalError := yaml.Marshal(newCompose)
-			if marshalError != nil {
-				fmt.Println(text.FgRed.Sprint("can't manage docker-compose.yml, the contents of the file are invalid."))
-				return
-			}
-
-			if err := os.WriteFile(dockerComposePath, newComposeYmlAsBytes, dockerComposeFileInfo.Mode()); err != nil {
+			if err := utils.WriteDockerCompose(newCompose, dockerComposePath, dockerComposeFileInfo); err != nil {
 				fmt.Println(text.FgRed.Sprint(err))
 				return
-
 			}
 
 			fmt.Println(text.FgGreen.Sprint("Network added to docker-compose.yml succesfully!"))
@@ -110,10 +112,10 @@ func CreateComposeAddNetCommand() *cobra.Command {
 	return composeNetworkCmd
 }
 
-func networkAdd(compose *DockerCompose, networkName string, network Network) (*DockerCompose, error) {
-	newCompose := compose
+func networkAdd(composeYml *compose.DockerCompose, networkName string, network compose.Network) (*compose.DockerCompose, error) {
+	newCompose := composeYml
 	if newCompose.Networks == nil {
-		newCompose.Networks = make(Networks)
+		newCompose.Networks = make(compose.Networks)
 	}
 
 	if _, ok := newCompose.Networks[networkName]; ok {
