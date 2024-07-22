@@ -33,8 +33,8 @@ Once installed, you can use gorvus to generate Dockerfiles and docker-compose.ym
 | `gorvus compose` | `--cd <DIRECTORY>` | Manages directory's docker-compose.yml | no |
 
 
-> **_NOTE:_** All subcommands inherits flags from their parent
-> Example: `gorvus compose --cd add ...`
+> **_NOTE:_** All subcommands inherits flags from their parent.
+> e.g: `gorvus compose --cd add ...`
 
 | Subcommand | Flags | Description | Interactive Mode |
 | :-----: | :--- | :--- | :---: |
