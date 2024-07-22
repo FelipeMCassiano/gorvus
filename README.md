@@ -1,6 +1,6 @@
 <div align='center'>
   <h1>Gorvus (Beta 1.2.3)</h1>
-  <p>gorvus is a command-line interface (CLI) tool written in Go that simplifies the process of generating Dockerfiles and docker-compose.yml files for your projects. With gorvus, you can quickly scaffold Docker configurations without manual editing, saving time and effort.</p>
+  <p>gorvus is a command-line interface tool written in Go that simplifies the process of generating Dockerfiles and docker-compose.yml files for your projects. With gorvus, you can quickly scaffold Docker configurations without manual editing, saving time and effort.</p>
   <img src='https://img.shields.io/github/languages/top/FelipeMCassiano/gorvus' alt='GitHub top language' />
   <img src='https://img.shields.io/github/last-commit/FelipeMCassiano/gorvus' alt='GitHub last commit' />
   <img src= 'https://img.shields.io/github/go-mod/go-version/FelipeMCassiano/gorvus' alt='Go mod Version'/>
@@ -26,13 +26,15 @@ go install github.com/FelipeMCassiano/gorvus/gorvus@v1.2.3
 ## Usage
 
 Once installed, you can use gorvus to generate Dockerfiles and docker-compose.yml files for your projects.
-### Generate Dockerfile
-| Command | Flags |
-| --- | --- |
-| `gorvus createDockerfile` | `-p --projectName <PROJECT-NAME>`, `-l --language <LANGUAGE-TEMPLATE>` |  
 
-### Manage docker-compose.yml
-| Command | Flags | Description | Interactive Mode |
+| Command | Flags | Description | Interactive Mode|
+| :---: | :---: | :---: | :---:|
+| `gorvus createDockerfile` | `-p --projectName <PROJECT-NAME>`, `-l --language <LANGUAGE-TEMPLATE>` |  Create Dockerfile based on input language and project name | yes |
+| `gorvus compose` | `--cd <DIRECTORY>` | Manages directory's docker-compose.yml | no |
+
+> **_NOTE:_** All subcommands inherits flags from their parent
+
+| Subcommand | Flags | Description | Interactive Mode |
 | :-----: | :---: | :---: | :---: |
 | `gorvus compose new` | doens't have flags | Create a new docker-compose.yml file with or without a [template](###Templates) | yes |
 | `gorvus compose add` | `-s --service <SERVICE-NAME>`, `-i --image <IMAGE>`, `-p --ports <PORTS>`, `-e --envs <ENVS>`, `-n --networks <NETWORK>`, `--hs <HOSTNAME>` | Adds a new service into docker-compose.yml | yes |
