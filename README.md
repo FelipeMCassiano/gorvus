@@ -23,61 +23,25 @@ To install gorvus, you need to have Go installed on your system. Then, you can i
 ```bash
 go install github.com/FelipeMCassiano/gorvus/gorvus@v1.2.3
 ```
-
 ## Usage
 
 Once installed, you can use gorvus to generate Dockerfiles and docker-compose.yml files for your projects.
-
 ### Generate Dockerfile
-* You can use Gorvus interactively without flags:
-```bash
-gorvus gend
-```
-* OR specify language and project name:
-```bash
-gorvus createDockerfile --language<language> --projectName<projectName>
-```
+| Command | Flags |
+| --- | --- |
+| `gorvus createDockerfile` | `-p --projectName <PROJECT-NAME>`, `-l --language <LANGUAGE-TEMPLATE>` |  
 
-> [!NOTE]
-> Currently, only the languages Go, Rust, Node(js and ts), Java(gradle), Dotnet and Bun supports Dockerfile generation.
+### Manage docker-compose.yml
+| Command | Flags | Description | Interactive Mode |
+| ----- | --- | --- | --- |
+| `gorvus compose new` | doens't have flags | Create a new docker-compose.yml file with or without a [template](###Templates) | yes |
+| `gorvus compose add` | `-s --service <SERVICE-NAME>`, `-i --image <IMAGE>`, `-p --ports <PORTS>`, `-e --envs <ENVS>`, `-n --networks <NETWORK>`, `--hs <HOSTNAME>` | Adds a new service into docker-compose.yml | yes |
+| `gorvus compose add-net` | `-n --name<NETWORK-NAME>`, `-d --driver<NETWORK-DRIVE>` ,`-x --name-network<reference this network when you're connecting containers>` | Adds a new network into docker-compose.yml | yes |
+| `gorvus compose rm ` | `-s --service <SERVICE-NAME>`, `-n --network<NETWORK-NAME>` | Remove services or networks in docker-compose.yml | yes |
 
-### Generate docker-compose.yml
-```bash
-gorvus compose new
-```
-
-> [!NOTE]
-> Currently, only Postgres, Mysql and MongoDb have support for docker-compose with template generation.
-
-### Add Services into docker-compose.yml
-* You can use Gorvus interactively without flags, or specify service details:
-```bash
-gorvus compose add
-```
-* OR provide details using flags:
-```bash
-gorvus compose add --image<image> --service<serviceName> --ports<ports> --envs<environment> --networks<networkName> --hostname<hostname>
-```
-### Add Networks into docker-compose.yml
-* You can use Gorvus interactively without flags:
-```bash
-gorvus compose add-net
-```
-* OR specify network details:
-```bash
-gorvus compose add-net --name<network name> --driver<network driver> --name-docker<reference this network when you're connecting containers>
-```
-
-### Remove Services or Networks in docker-compose.yml
-
-* To remove a service
-```bash
-gorvus compose rm -s<service name>
-```
-* To remove a network
-```bash
-gorvus compose rm -n<network name>
-```
+### Templates
+- Currently, only the languages Go, Rust, Node(js and ts), Java(gradle), Dotnet and Bun supports Dockerfile generation.
+-  Currently, only Postgres, Mysql and MongoDb have support for docker-compose with template generation.
 
 ## Contributing
 
