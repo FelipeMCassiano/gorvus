@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 func ApplyTemplate(writer io.Writer, Template string, data interface{}) {
@@ -19,4 +20,8 @@ func ApplyTemplate(writer io.Writer, Template string, data interface{}) {
 		fmt.Println("Error executing template:", err)
 		os.Exit(1)
 	}
+}
+
+func CreateFile(path string, fileName string) (*os.File, error) {
+	return os.Create(filepath.Join(path, fileName))
 }
