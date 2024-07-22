@@ -33,7 +33,7 @@ Once installed, you can use gorvus to generate Dockerfiles and docker-compose.ym
 
 ### Manage docker-compose.yml
 | Command | Flags | Description | Interactive Mode |
-| ----- | --- | --- | --- |
+| :-----: | :---: | :---: | :---: |
 | `gorvus compose new` | doens't have flags | Create a new docker-compose.yml file with or without a [template](###Templates) | yes |
 | `gorvus compose add` | `-s --service <SERVICE-NAME>`, `-i --image <IMAGE>`, `-p --ports <PORTS>`, `-e --envs <ENVS>`, `-n --networks <NETWORK>`, `--hs <HOSTNAME>` | Adds a new service into docker-compose.yml | yes |
 | `gorvus compose add-net` | `-n --name<NETWORK-NAME>`, `-d --driver<NETWORK-DRIVE>` ,`-x --name-network<reference this network when you're connecting containers>` | Adds a new network into docker-compose.yml | yes |
