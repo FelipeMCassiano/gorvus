@@ -10,7 +10,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func DotNetDockerFileBuilder(input DockerfileData) error {
+func DotNetDockerFileBuilder(input DockerfileData, outpath string) error {
 	if len(input.ProjectName) == 0 {
 		pN, err := setProjectName()
 		if err != nil {
@@ -44,7 +44,7 @@ func DotNetDockerFileBuilder(input DockerfileData) error {
 		return err
 	}
 
-	file, err := os.Create("Dockerfile")
+	file, err := builders.CreateFile(outpath, "Dockerfile")
 	if err != nil {
 		return err
 	}

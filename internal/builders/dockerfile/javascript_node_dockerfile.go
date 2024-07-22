@@ -11,7 +11,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func JavascriptDockerFileBuilder(input DockerfileData) error {
+func JavascriptDockerFileBuilder(input DockerfileData, outpath string) error {
 	if len(input.EntryFile) == 0 {
 		eF, err := setEntryfile()
 		if err != nil {
@@ -51,7 +51,7 @@ func JavascriptDockerFileBuilder(input DockerfileData) error {
 		return err
 	}
 
-	file, err := os.Create("Dockerfile")
+	file, err := builders.CreateFile(outpath, "Dockerfile")
 	if err != nil {
 		return fmt.Errorf("failed to creating Dockerfile: %s", err.Error())
 	}

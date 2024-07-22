@@ -13,7 +13,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func TypescriptDockerFileBuilder(input DockerfileData) error {
+func TypescriptDockerFileBuilder(input DockerfileData, outpath string) error {
 	if len(input.EntryFile) == 0 {
 		eF, err := setEntryfile()
 		if err != nil {
@@ -58,7 +58,7 @@ func TypescriptDockerFileBuilder(input DockerfileData) error {
 	input.EntryFile = strings.TrimSuffix(input.EntryFile, filepath.Ext(input.EntryFile))
 	input.Version = nodeVersion
 
-	file, err := os.Create("Dockerfile")
+	file, err := builders.CreateFile(outpath, "Dockerfile")
 	if err != nil {
 		return fmt.Errorf("failed to creating Dockerfile: %s", err.Error())
 	}

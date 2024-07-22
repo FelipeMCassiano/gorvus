@@ -10,7 +10,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func JavaGradleDockerFileBuilder(input DockerfileData) error {
+func JavaGradleDockerFileBuilder(input DockerfileData, outpath string) error {
 	if len(input.ProjectName) == 0 {
 		pN, err := setProjectName()
 		if err != nil {
@@ -43,7 +43,7 @@ func JavaGradleDockerFileBuilder(input DockerfileData) error {
 	if err != nil {
 		return err
 	}
-	file, err := os.Create("Dockerfile")
+	file, err := builders.CreateFile(outpath, "Dockerfile")
 	if err != nil {
 		return err
 	}

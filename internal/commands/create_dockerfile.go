@@ -17,6 +17,7 @@ func generateDockerfile() *cobra.Command {
 	var language string
 	var listLanguages bool
 	var entryFile string
+	var outputPath string
 
 	cmd := &cobra.Command{
 		Use:     "create-dockerfile",
@@ -56,6 +57,7 @@ func generateDockerfile() *cobra.Command {
 	cmd.Flags().StringVarP(&language, "language", "l", "", "Define template language")
 	cmd.Flags().BoolVarP(&listLanguages, "list-languages", "s", false, "Gives a list with the supported languages")
 	cmd.Flags().StringVarP(&entryFile, "entry-file", "e", "", "Define entry file")
+	cmd.Flags().StringVarP(&outputPath, "output-path", "o", "", "Define output path")
 
 	return cmd
 }

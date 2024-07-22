@@ -2,8 +2,6 @@ package compose
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/manifoldco/promptui"
@@ -18,7 +16,7 @@ func MongoDBComposeFileBuilder(outpath string) error {
 		return err
 	}
 
-	file, err := os.Create(filepath.Join(outpath, "docker-compose.yml"))
+	file, err := builders.CreateFile(outpath, "docker-compose.yml")
 	if err != nil {
 		return err
 	}

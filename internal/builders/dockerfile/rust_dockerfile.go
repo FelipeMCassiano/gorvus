@@ -10,7 +10,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func RustDockerFileBuilder(input DockerfileData) error {
+func RustDockerFileBuilder(input DockerfileData, outpath string) error {
 	if len(input.ProjectName) == 0 {
 		pN, err := setProjectName()
 		if err != nil {
@@ -47,7 +47,7 @@ func RustDockerFileBuilder(input DockerfileData) error {
 
 	input.Version = rustVersion
 
-	file, err := os.Create("Dockerfile")
+	file, err := builders.CreateFile(outpath, "Dockerfile")
 	if err != nil {
 		fmt.Println("Error creating Dockerfile:", err)
 		return err
