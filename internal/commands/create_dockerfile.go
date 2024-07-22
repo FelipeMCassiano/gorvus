@@ -24,6 +24,12 @@ func generateDockerfile() *cobra.Command {
 		Short:   "Create Dockerfile based on input language and project name",
 		Aliases: []string{"gend", "generate-dockerfile"},
 		Run: func(cmd *cobra.Command, args []string) {
+			if outputPath != "" {
+				if _, err := os.Stat(outputPath); err != nil && os.IsNotExist(err) {
+					fmt.Println(text.FgRed.Sprint(err.Error()))
+					os.Exit(1)
+				}
+			}
 			if listLanguages {
 				utils.ShowSupportedLangs()
 				os.Exit(0)
@@ -44,7 +50,7 @@ func generateDockerfile() *cobra.Command {
 
 			builder := utils.GetDockerfileBuilder(strings.ToLower(language))
 
-			if err := builder(input); err != nil {
+			if err := builder(input, outputPath); err != nil {
 				fmt.Println(text.FgRed.Sprintf("error: %s", err.Error()))
 				os.Exit(1)
 

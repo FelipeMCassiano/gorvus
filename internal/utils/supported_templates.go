@@ -5,7 +5,7 @@ import (
 	"github.com/FelipeMCassiano/gorvus/internal/builders/dockerfile"
 )
 
-var supportedLangs = map[string]func(dockerfile.DockerfileData) error{
+var supportedLangs = map[string]func(dockerfile.DockerfileData, string) error{
 	"go":            dockerfile.GoDockerFileBuilder,
 	"rust":          dockerfile.RustDockerFileBuilder,
 	"node-ts":       dockerfile.TypescriptDockerFileBuilder,

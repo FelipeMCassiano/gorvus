@@ -8,7 +8,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-func GetDockerfileBuilder(language string) func(dockerfile.DockerfileData) error {
+func GetDockerfileBuilder(language string) func(dockerfile.DockerfileData, string) error {
 	builder, ok := supportedLangs[language]
 
 	if !ok {
