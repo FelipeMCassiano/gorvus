@@ -15,7 +15,7 @@ var supportedLangs = map[string]func(dockerfile.DockerfileData) error{
 	"java-gradle":   dockerfile.JavaGradleDockerFileBuilder,
 }
 
-var supportedComposeTemplates = map[string]func() error{
+var supportedComposeTemplates = map[string]func(string) error{
 	"postgres": compose.PostgreSQLComposeFileBuilder,
 	"mysql":    compose.MySQLComposeFileBuilder,
 	"mongodb":  compose.MongoDBComposeFileBuilder,

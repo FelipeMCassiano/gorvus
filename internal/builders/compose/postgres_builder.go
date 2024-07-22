@@ -3,12 +3,13 @@ package compose
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/FelipeMCassiano/gorvus/internal/builders"
 	"github.com/manifoldco/promptui"
 )
 
-func PostgreSQLComposeFileBuilder() error {
+func PostgreSQLComposeFileBuilder(outpath string) error {
 	compose := setPostgresSettings()
 
 	path := fmt.Sprintf("templates/%s.tmpl", "postgres")
@@ -18,7 +19,7 @@ func PostgreSQLComposeFileBuilder() error {
 		return err
 	}
 
-	file, err := os.Create("docker-compose.yml")
+	file, err := os.Create(filepath.Join(outpath, "docker-compose.yml"))
 	if err != nil {
 		return err
 	}

@@ -7,34 +7,44 @@ import (
 	"path"
 
 	"github.com/FelipeMCassiano/gorvus/internal/builders/compose"
-	"github.com/jedib0t/go-pretty/v6/text"
 	"gopkg.in/yaml.v3"
 )
 
-func GetDockerComposePath() (compose.DockerCompose, fs.FileInfo, string, error) {
-	workingDir, getWdError := os.Getwd()
-	if getWdError != nil {
-		fmt.Println(text.FgRed.Sprint("oops! could not get current working directory."))
-		os.Exit(1)
+func GetDockerComposePath(outpath string) (compose.DockerCompose, fs.FileInfo, string, error) {
+	var workingDir string
+	if outpath != "" {
+		if _, err := os.Stat(outpath); err != nil && os.IsNotExist(err) {
+			return compose.DockerCompose{}, nil, "", err
+		}
+
+		workingDir = outpath
+	} else {
+		wD, getWdError := os.Getwd()
+		if getWdError != nil {
+			err := fmt.Errorf("oops! could not get current working directory.")
+			return compose.DockerCompose{}, nil, "", err
+		}
+		workingDir = wD
 	}
 
 	dockerComposePath := path.Join(workingDir, "docker-compose.yml")
 	dockerComposeFileInfo, statComposeError := os.Stat(dockerComposePath)
 	if statComposeError != nil {
-		fmt.Println(text.FgRed.Sprint("for some reason, it failed to read docker-compose.yml file."))
-		os.Exit(1)
+		err := fmt.Errorf("for some reason, it failed to read docker-compose.yml file.")
+		return compose.DockerCompose{}, nil, "", err
 	}
 
 	dockerComposeFileContents, readComposeError := os.ReadFile(dockerComposePath)
 	if readComposeError != nil {
-		fmt.Println(text.FgRed.Sprint("for some reason, it failed to read docker-compose.yml file."))
-		os.Exit(1)
+		err := fmt.Errorf("for some reason, it failed to read docker-compose.yml file.")
+		return compose.DockerCompose{}, nil, "", err
 	}
 	var composeYml compose.DockerCompose
 
 	yamlParseError := yaml.Unmarshal(dockerComposeFileContents, &composeYml)
 	if yamlParseError != nil {
-		fmt.Println(text.FgRed.Sprint("can't manage docker-compose.yml, the contents of the file are invalid."))
+		err := fmt.Errorf("can't manage docker-compose.yml, the contents of the file are invalid.")
+		return compose.DockerCompose{}, nil, "", err
 	}
 
 	return composeYml, dockerComposeFileInfo, dockerComposePath, nil

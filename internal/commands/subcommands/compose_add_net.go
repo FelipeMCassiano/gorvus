@@ -2,6 +2,7 @@ package subcommands
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/FelipeMCassiano/gorvus/internal/builders/compose"
 	"github.com/FelipeMCassiano/gorvus/internal/utils"
@@ -19,10 +20,21 @@ func CreateComposeAddNetCommand() *cobra.Command {
 		Use:   "add-net",
 		Short: "Adds a new network into docker-compose.yml",
 		Run: func(cmd *cobra.Command, args []string) {
+			changedDirectory, err := cmd.Flags().GetString("cd")
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
 			if len(networkNameFlag) == 0 && len(networkDriverFlag) == 0 && len(nameDockerNetworkFlag) == 0 {
+
+				composeYml, dockerComposeFileInfo, dockerComposePath, err := utils.GetDockerComposePath(changedDirectory)
+				if err != nil {
+					fmt.Println(text.FgRed.Sprint(err))
+					return
+				}
 				promptName := promptui.Prompt{
-					Label:    "Network Name",
-					Validate: validatePrompt,
+					Label: "Network Name", Validate: validatePrompt,
 				}
 				name, _ := promptName.Run()
 				promptDriver := promptui.Prompt{
@@ -39,11 +51,6 @@ func CreateComposeAddNetCommand() *cobra.Command {
 				network := compose.Network{
 					Driver: driver,
 					Name:   nameNetwork,
-				}
-				composeYml, dockerComposeFileInfo, dockerComposePath, err := utils.GetDockerComposePath()
-				if err != nil {
-					fmt.Println(text.FgRed.Sprint(err))
-					return
 				}
 
 				newCompose, err := networkAdd(&composeYml, name, network)
@@ -83,7 +90,7 @@ func CreateComposeAddNetCommand() *cobra.Command {
 				return
 			}
 
-			composeYml, dockerComposeFileInfo, dockerComposePath, err := utils.GetDockerComposePath()
+			composeYml, dockerComposeFileInfo, dockerComposePath, err := utils.GetDockerComposePath(changedDirectory)
 			if err != nil {
 				fmt.Println(text.FgRed.Sprint(err))
 				return

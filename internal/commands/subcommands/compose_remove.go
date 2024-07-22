@@ -2,6 +2,7 @@ package subcommands
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/FelipeMCassiano/gorvus/internal/builders/compose"
 	"github.com/FelipeMCassiano/gorvus/internal/utils"
@@ -17,34 +18,13 @@ func CreateComposeRemoveCommand() *cobra.Command {
 		Short:   "Remove services or networks in docker-compose.yml",
 		Aliases: []string{"rm"},
 		Run: func(cmd *cobra.Command, args []string) {
-			// workingDir, getWdError := os.Getwd()
-			// if getWdError != nil {
-			// 	fmt.Println(text.FgRed.Sprint("oops! could not get current working directory."))
-			// 	os.Exit(1)
-			// }
+			changedDirectory, err := cmd.Flags().GetString("cd")
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 
-			// dockerComposePath := path.Join(workingDir, "docker-compose.yml")
-			// dockerComposeFileInfo, statComposeError := os.Stat(dockerComposePath)
-			// if statComposeError != nil {
-			// 	fmt.Println(text.FgRed.Sprint("for some reason, it failed to read docker-compose.yml file."))
-			// 	os.Exit(1)
-			// }
-
-			// dockerComposeFileContents, readComposeError := os.ReadFile(dockerComposePath)
-			// if readComposeError != nil {
-			// 	fmt.Println(text.FgRed.Sprint("for some reason, it failed to read docker-compose.yml file."))
-			// 	os.Exit(1)
-			// }
-
-			// var composeYml DockerCompose
-
-			// yamlParseError := yaml.Unmarshal(dockerComposeFileContents, &composeYml)
-			// if yamlParseError != nil {
-			// 	fmt.Println(text.FgRed.Sprint("can't manage docker-compose.yml, the contents of the file are invalid."))
-			// 	os.Exit(1)
-			// }
-
-			composeYml, dockerComposeFileInfo, dockerComposePath, err := utils.GetDockerComposePath()
+			composeYml, dockerComposeFileInfo, dockerComposePath, err := utils.GetDockerComposePath(changedDirectory)
 			if err != nil {
 				fmt.Println(text.FgRed.Sprint(err))
 				return

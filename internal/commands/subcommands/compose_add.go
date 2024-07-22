@@ -24,8 +24,39 @@ func CreateComposeAddCommand() *cobra.Command {
 		Use:   "add",
 		Short: "Adds a new service into docker-compose.yml",
 		Run: func(cmd *cobra.Command, args []string) {
+			changedDirectory, err := cmd.Flags().GetString("cd")
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
 			envs := viper.GetStringMapString("envs")
 
+			composeYml, dockerComposeFileInfo, dockerComposePath, err := utils.GetDockerComposePath(changedDirectory)
+			if err != nil {
+				fmt.Println(text.FgRed.Sprint(err))
+				os.Exit(1)
+			}
+
+			if composeYml.Version == "" {
+
+				prompt := promptui.Select{
+					Label: "It seems like your docker-compose file does not have a version defined. Would you like to define one?",
+					Items: []string{"yes", "no"},
+				}
+
+				_, answer, _ := prompt.Run()
+
+				if answer == "yes" {
+					promptVersion := promptui.Prompt{
+						Label:    "Type the desired version",
+						Validate: validatePrompt,
+					}
+					version, _ := promptVersion.Run()
+					composeYml.Version = version
+
+				}
+			}
 			if len(serviceNameFlag) == 0 {
 
 				prompt := promptui.Prompt{
@@ -49,31 +80,6 @@ func CreateComposeAddCommand() *cobra.Command {
 				Ports:       servicePortsFlag,
 			}
 
-			composeYml, dockerComposeFileInfo, dockerComposePath, err := utils.GetDockerComposePath()
-			if err != nil {
-				fmt.Println(text.FgRed.Sprint(err))
-				os.Exit(1)
-			}
-
-			if composeYml.Version == "" {
-
-				prompt := promptui.Select{
-					Label: "It seems like your docker-compose file does not have a version defined. Would you like to define one?",
-					Items: []string{"yes", "no"},
-				}
-
-				_, answer, _ := prompt.Run()
-
-				if answer == "yes" {
-					promptVersion := promptui.Prompt{
-						Label:    "Type the disired version",
-						Validate: validatePrompt,
-					}
-					version, _ := promptVersion.Run()
-					composeYml.Version = version
-
-				}
-			}
 			newCompose, addServiceError := composeAdd(&composeYml, serviceNameFlag, service)
 			if addServiceError != nil {
 				fmt.Println(text.FgRed.Sprint(addServiceError))
@@ -97,7 +103,7 @@ func CreateComposeAddCommand() *cobra.Command {
 		os.Exit(1)
 	}
 	composeAddCmd.Flags().StringSliceVarP(&serviceNetworksFlags, "networks", "n", []string{}, "sets the service network in docker-compose")
-	composeAddCmd.Flags().StringVarP(&serviceHostnameFlag, "hostname", "o", "", "sets the service hostname in docker-compose")
+	composeAddCmd.Flags().StringVar(&serviceHostnameFlag, "hs", "", "sets the service hostname in docker-compose")
 
 	return composeAddCmd
 }

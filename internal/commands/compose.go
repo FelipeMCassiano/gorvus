@@ -10,6 +10,7 @@ import (
 )
 
 func CreateComposeCommand() *cobra.Command {
+	var path string
 	composeCmd := &cobra.Command{
 		Use:   "compose",
 		Short: "Manages current directory's docker-compose.yml",
@@ -20,9 +21,10 @@ func CreateComposeCommand() *cobra.Command {
 			}
 		},
 	}
+	composeCmd.PersistentFlags().StringVar(&path, "cd", "", "Change the Directory")
 	composeCmd.AddCommand(subcommands.CreateComposeAddCommand())
 	composeCmd.AddCommand(subcommands.CreateComposeAddNetCommand())
-	composeCmd.AddCommand(subcommands.CreateComposeCreateCommand())
+	composeCmd.AddCommand(subcommands.CreateComposeNewCommand())
 	composeCmd.AddCommand(subcommands.CreateComposeRemoveCommand())
 
 	return composeCmd

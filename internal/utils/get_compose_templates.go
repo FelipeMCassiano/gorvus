@@ -1,6 +1,6 @@
 package utils
 
-func GetComposeTemplates(template string) func() error {
+func GetComposeTemplates(template string) func(string) error {
 	builder := supportedComposeTemplates[template]
 	return builder
 }
