@@ -21,7 +21,7 @@
 To install gorvus, you need to have Go installed on your system. Then, you can install it using the following command:
 
 ```bash
-go install github.com/FelipeMCassiano/gorvus/gorvus@v2
+go install github.com/FelipeMCassiano/gorvus/v2/gorvus@v2.0.2
 ```
 ## Usage
 
