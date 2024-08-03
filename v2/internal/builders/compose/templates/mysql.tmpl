@@ -1,0 +1,21 @@
+version: "{{.Version}}"
+    
+services:
+  mysql:
+    image: mysql:{{.ImageVersion}}
+    hostname: mysql 
+    environment:
+       MYSQL_DATABASE: {{.DbName}}
+       MYSQL_USER: {{.DbUser}}
+       MYSQL_ROOT_PASSWORD: {{.DbRootPass}}
+       MYSQL_PASSWORD: {{.DbPass}}
+    restart: "{{.Restart}}"
+    ports:
+        - "{{.Ports}}"
+    deploy:
+        resources:
+            limits:
+                cpus: "{{.Cpu}}"
+                memory: "{{.Memory}}MB"
+    networks:
+      - {{.NetworkName}}
