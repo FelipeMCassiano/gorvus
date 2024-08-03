@@ -6,7 +6,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/FelipeMCassiano/gorvus/internal/builders/compose"
+	"github.com/FelipeMCassiano/gorvus/v2/internal/builders/compose"
 	"gopkg.in/yaml.v3"
 )
 

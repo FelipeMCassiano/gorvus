@@ -3,7 +3,7 @@ package compose
 import (
 	"fmt"
 
-	"github.com/FelipeMCassiano/gorvus/internal/builders"
+	"github.com/FelipeMCassiano/gorvus/v2/internal/builders"
 	"github.com/manifoldco/promptui"
 )
 

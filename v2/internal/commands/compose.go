@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/FelipeMCassiano/gorvus/internal/commands/subcommands"
+	"github.com/FelipeMCassiano/gorvus/v2/internal/commands/subcommands"
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/spf13/cobra"
 )

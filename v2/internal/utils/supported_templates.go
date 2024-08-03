@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"github.com/FelipeMCassiano/gorvus/internal/builders/compose"
-	"github.com/FelipeMCassiano/gorvus/internal/builders/dockerfile"
+	"github.com/FelipeMCassiano/gorvus/v2/internal/builders/compose"
+	"github.com/FelipeMCassiano/gorvus/v2/internal/builders/dockerfile"
 )
 
 var supportedLangs = map[string]func(dockerfile.DockerfileData, string) error{
