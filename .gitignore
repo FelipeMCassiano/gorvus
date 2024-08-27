@@ -1,6 +1,6 @@
 # Project binaries and generated files
 Dockerfile
 *.yaml
-gorvus.1
+gorvus
 docker-compose.yml
 
