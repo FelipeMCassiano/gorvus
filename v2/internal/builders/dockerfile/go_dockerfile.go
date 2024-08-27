@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"regexp"
 
-	"github.com/FelipeMCassiano/gorvus/internal/builders"
+	"github.com/FelipeMCassiano/gorvus/v2/internal/builders"
 	"github.com/jedib0t/go-pretty/v6/text"
 )
 

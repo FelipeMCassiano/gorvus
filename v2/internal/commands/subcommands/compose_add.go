@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/FelipeMCassiano/gorvus/internal/builders/compose"
-	"github.com/FelipeMCassiano/gorvus/internal/utils"
+	"github.com/FelipeMCassiano/gorvus/v2/internal/builders/compose"
+	"github.com/FelipeMCassiano/gorvus/v2/internal/utils"
 	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
