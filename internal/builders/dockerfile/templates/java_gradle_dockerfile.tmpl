@@ -1,7 +1,0 @@
-FROM gradle:{{.Version}}-jammy AS build
-
-COPY . .
-
-RUN gradle build --no-daemon
-
-CMD ["java", "-jar", "build/libs/{{.ProjectName}}-0.0.1-SNAPSHOT.jar"]

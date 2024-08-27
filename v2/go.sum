@@ -1,5 +1,3 @@
-github.com/FelipeMCassiano/gorvus v1.2.3 h1:jy1i7z5b1PYEtuCMBk8CMMzbFbvDbYSX6Z3McR/fhKo=
-github.com/FelipeMCassiano/gorvus v1.2.3/go.mod h1:Zmym1xeqAtij/z+UxlFp9OD58X1MDc0fakYV4fweMNY=
 github.com/chzyer/logex v1.1.10 h1:Swpa1K6QvQznwJRcfTfQJmTE72DqScAa40E+fbHEXEE=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e h1:fY5BOSpyZCqRo5OhCuC+XN+r/bBCmeuuJtjz+bCNIf8=
