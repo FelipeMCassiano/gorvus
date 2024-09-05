@@ -3,7 +3,7 @@
   <p>gorvus is a command-line interface tool written in Go that simplifies the process of generating Dockerfiles and docker-compose.yml files for your projects. With gorvus, you can quickly scaffold Docker configurations without manual editing, saving time and effort.</p>
   <img src='https://img.shields.io/github/languages/top/FelipeMCassiano/gorvus' alt='GitHub top language' />
   <img src='https://img.shields.io/github/last-commit/FelipeMCassiano/gorvus' alt='GitHub last commit' />
-  <img src= 'https://img.shields.io/github/go-mod/go-version/FelipeMCassiano/gorvus' alt='Go mod Version'/>
+
 </div>
 
 > [!TIP]
