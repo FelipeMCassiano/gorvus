@@ -4,15 +4,16 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:  
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # For release uploads
+      contents: write  
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # For goreleaser
+          fetch-depth: 0  
 
       - uses: goreleaser/goreleaser-action@v6
         with:
