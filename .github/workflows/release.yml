@@ -2,8 +2,9 @@ name: Release Binaries
 
 on:
   push:
-    tags: ['v*.*.*']
-  workflow_dispatch:
+    tags: 
+      - 'v*.*.*'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,19 +19,19 @@ jobs:
     - name: Build Linux
       run: |
         cd v2/gorvus
-        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.Version=${GITHUB_REF_NAME#v}" -o ../../gorvus_linux_amd64 ./main.go
+        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o ../../gorvus_linux_amd64 ./main.go
 
     - name: Build Windows
       run: |
         cd v2/gorvus
-        CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w -X main.Version=${GITHUB_REF_NAME#v}" -o ../../gorvus_windows_amd64.exe ./main.go
+        CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ../../gorvus_windows_amd64.exe ./main.go
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
+        tag_name: ${{ github.ref_name }}  # v2.5.1 from tag
+        name: gorvus ${{ github.ref_name }}
+        generate_release_notes: true
         files: |
           gorvus_linux_amd64
           gorvus_windows_amd64.exe
-        generate_release_notes: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
