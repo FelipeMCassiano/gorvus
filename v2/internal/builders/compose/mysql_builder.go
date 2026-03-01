@@ -43,7 +43,7 @@ func setMysqlSettings() *ComposeData {
 		{"Ports (Default: 3306:3306)", &data.Ports},
 		{"CPU (Default: 1)", &data.Cpu},
 		{"Memory (MB) (Default: 500)", &data.Memory},
-		{"Network Name (Default: network)", &data.NetworkName},
+		{"Network Name (empty to skip)", &data.NetworkName},
 	}
 
 	for _, p := range prompts {
