@@ -3,7 +3,7 @@ builds:
           - CGO_ENABLED=0
       goos: [linux, windows]
       goarch: [amd64]
-      main: ./v2/gorvus
+      main: ./v2/gorvus/
       binary: gorvus
       ldflags:
           - -s -w -X main.Version={{.Version}}
