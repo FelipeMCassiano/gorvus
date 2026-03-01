@@ -40,7 +40,7 @@ func setMongoDbSettings() *ComposeData {
 		{"Ports (Default: 27017:27017)", &data.Ports},
 		{"CPU (Default: 1)", &data.Cpu},
 		{"Memory (MB) (Default: 500)", &data.Memory},
-		{"Network Name (Default: network)", &data.NetworkName},
+		{"Network Name (empty to skip)", &data.NetworkName},
 	}
 
 	for _, p := range prompts {
