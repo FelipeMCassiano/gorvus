@@ -34,7 +34,6 @@ func setMongoDbSettings() *ComposeData {
 		Label   string
 		Pointer *string
 	}{
-		{"docker-compose Version (Default: 3.9)", &data.Version},
 		{"Image Version (Default: latest)", &data.ImageVersion},
 		{"MONGO_INITDB_ROOT_USERNAME (Default: USER)", &data.DbUser},
 		{"MONGO_INITDB_ROOT_PASSWORD (Default: PASS)", &data.DbPass},
@@ -57,9 +56,7 @@ func setMongoDbSettings() *ComposeData {
 
 		*p.Pointer = result
 	}
-	if len(data.Version) == 0 {
-		data.Version = "3.9"
-	}
+
 	if len(data.ImageVersion) == 0 {
 		data.ImageVersion = "latest"
 	}
@@ -79,7 +76,7 @@ func setMongoDbSettings() *ComposeData {
 		data.Memory = "500"
 	}
 	if len(data.NetworkName) == 0 {
-		data.NetworkName = "network"
+		data.NetworkName = ""
 	}
 
 	return data

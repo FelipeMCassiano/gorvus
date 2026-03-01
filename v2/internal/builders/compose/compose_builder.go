@@ -6,7 +6,6 @@ import "embed"
 var templatesContent embed.FS
 
 type ComposeData struct {
-	Version      string
 	ImageVersion string
 	DbName       string
 	DbUser       string
@@ -22,9 +21,9 @@ type ComposeData struct {
 type Service struct {
 	Image       string            `yaml:"image"`
 	Hostname    string            `yaml:"hostname"`
-	Environment map[string]string `yaml:"environment"`
-	Ports       []string          `yaml:"ports"`
-	Networks    []string          `yaml:"networks"`
+	Environment map[string]string `yaml:"environment,omitempty"`
+	Ports       []string          `yaml:"ports,omitempty"`
+	Networks    []string          `yaml:"networks,omitempty"`
 }
 
 type Network struct {
@@ -35,7 +34,6 @@ type Network struct {
 type Networks map[string]Network
 
 type DockerCompose struct {
-	Version  string             `yaml:"version"`
 	Services map[string]Service `yaml:"services"`
-	Networks Networks           `yaml:"networks"`
+	Networks Networks           `yaml:"networksk,omitempty"`
 }

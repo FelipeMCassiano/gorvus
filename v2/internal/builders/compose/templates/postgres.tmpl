@@ -1,5 +1,3 @@
-version: "{{.Version}}"
-    
 services:
   postgres:
     image: postgres:{{.ImageVersion}}
@@ -16,5 +14,7 @@ services:
             limits:
                 cpus: "{{.Cpu}}"
                 memory: "{{.Memory}}MB"
+    {{if .NetworkName}}
     networks:
       - {{.NetworkName}}
+    {{end}}

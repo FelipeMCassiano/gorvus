@@ -38,25 +38,6 @@ func CreateComposeAddCommand() *cobra.Command {
 				os.Exit(1)
 			}
 
-			if composeYml.Version == "" {
-
-				prompt := promptui.Select{
-					Label: "It seems like your docker-compose file does not have a version defined. Would you like to define one?",
-					Items: []string{"yes", "no"},
-				}
-
-				_, answer, _ := prompt.Run()
-
-				if answer == "yes" {
-					promptVersion := promptui.Prompt{
-						Label:    "Type the desired version",
-						Validate: validatePrompt,
-					}
-					version, _ := promptVersion.Run()
-					composeYml.Version = version
-
-				}
-			}
 			if len(serviceNameFlag) == 0 {
 
 				prompt := promptui.Prompt{
@@ -211,6 +192,10 @@ func setServiceSettings(service *compose.Service) *compose.Service {
 			}
 
 			if network == "stop" {
+				break
+			}
+
+			if network == "" {
 				break
 			}
 
