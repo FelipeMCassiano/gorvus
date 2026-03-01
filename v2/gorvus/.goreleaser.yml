@@ -1,22 +1,21 @@
 builds:
-  - env:
-    - CGO_ENABLED=0
-    goos: [linux, windows]
-    goarch: [amd64, arm64]
-    main: ./v2/gorvus  # Points to main.go directory
-    binary: gorvus
-    ldflags:
-      - -s -w
-      - -X main.Version={{.Version}}
+    - env:
+          - CGO_ENABLED=0
+      goos: [linux, windows]
+      goarch: [amd64]
+      main: .
+      binary: gorvus
+      ldflags:
+          - -s -w -X main.Version={{.Version}}
 
 archives:
-  - format: binary
-    name_template: 'gorvus_{{.Os}}_{{.Arch}}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-  - format: tar.gz
-    name_template: 'gorvus_{{.Version}}_{{.Os}}_{{.Arch}}.tar.gz'
+    - format: binary
+      name_template: "gorvus_{{.Os}}_{{.Arch}}"
+    - format: zip
+      name_template: "gorvus_{{.Version}}_{{.Os}}_{{.Arch}}.zip"
+      os: windows
 
 release:
-  github:
-    owner: '{{ .GitHubOwner }}'
-    repo: '{{ .GitHubRepository }}'
-  disable: false
+    github:
+        owner: "{{ .GitHubOwner }}"
+        repo: "{{ .GitHubRepository }}"
